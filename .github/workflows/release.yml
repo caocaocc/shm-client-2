@@ -101,6 +101,10 @@ jobs:
         VERSION_MINOR=$(echo $BASE_VERSION | cut -d '.' -f 1,2)
         echo "minor=${VERSION_MINOR}" >> $GITHUB_OUTPUT
 
+        # Get major version (1 from 1.2.3, or 3 from 3.0-dev)
+        VERSION_MAJOR=$(echo $BASE_VERSION | cut -d '.' -f 1)
+        echo "major=${VERSION_MAJOR}" >> $GITHUB_OUTPUT
+
         # Get git revision
         REV=$(git rev-parse --short HEAD)
         echo "rev=${REV}" >> $GITHUB_OUTPUT
@@ -161,6 +165,7 @@ jobs:
         tags: |
           ${{ format('{0}-client-2:{1}', env.IMAGE_NAME, steps.version.outputs.tag) }}
           ${{ steps.version.outputs.is_release == 'true' && format('{0}-client-2:{1}', env.IMAGE_NAME, steps.version.outputs.minor) || '' }}
+          ${{ steps.version.outputs.is_release == 'true' && format('{0}-client-2:{1}', env.IMAGE_NAME, steps.version.outputs.major) || '' }}
           ${{ format('{0}-client-2:{1}', env.IMAGE_NAME, steps.version.outputs.is_release == 'true' && 'latest' || steps.version.outputs.tag_suffix) }}
           ${{ steps.version.outputs.minor_with_suffix != '' && format('{0}-client-2:{1}', env.IMAGE_NAME, steps.version.outputs.minor_with_suffix) || '' }}
         cache-from: type=gha,scope=client-2
@@ -178,6 +183,7 @@ jobs:
           ### client-2 Image
           ${{ steps.version.outputs.is_release == 'true' && format('- `{0}-client-2:{1}`', env.IMAGE_NAME, steps.version.outputs.tag) || '' }}
           ${{ steps.version.outputs.is_release == 'true' && format('- `{0}-client-2:{1}`', env.IMAGE_NAME, steps.version.outputs.minor) || format('- `{0}-client-2:{1}`', env.IMAGE_NAME, steps.version.outputs.tag) }}
+          ${{ steps.version.outputs.is_release == 'true' && format('- `{0}-client-2:{1}`', env.IMAGE_NAME, steps.version.outputs.major) || '' }}
           - `${{ env.IMAGE_NAME }}-client-2:${{ steps.version.outputs.is_release == 'true' && 'latest' || steps.version.outputs.tag_suffix }}`
 
           **Version:** `${{ steps.version.outputs.version_string }}`
