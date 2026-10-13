@@ -46,6 +46,12 @@ if [ ! -z "$PROXY_URL" ]; then
     sed -i "s|#SHM_URL|$PROXY_URL|" /etc/nginx/conf.d/default.conf
 fi
 
+# Внешний HTTPS-апстрим (например, за Caddy/Cloudflare) выбирает сайт по Host,
+# поэтому отдаём ему его собственное имя, а не localhost
+case "$PROXY_URL" in
+    https://*) sed -i "s|proxy_set_header Host \$host; # shm-upstream-host|proxy_set_header Host \$proxy_host;|" /etc/nginx/conf.d/default.conf ;;
+esac
+
 if [ ! -z "$SHM_BASE_PATH" ] && [ "$SHM_BASE_PATH" != "/" ]; then
     sed -i "s|#BASE_LOCATION|location $SHM_BASE_PATH/ {\n        alias /app/;\n        try_files \$uri \$uri/ /index.html;\n    }|" /etc/nginx/conf.d/default.conf
     sed -i "s|href=\"/\"|href=\"${SHM_BASE_PATH}/\"|" /app/index.html

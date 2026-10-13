@@ -134,7 +134,8 @@ export const systemApi = {
 export const userApi = {
   getProfile: () => api.get('/user'),
   updateProfile: (data: Record<string, unknown>) => api.post('/user', data),
-  changePassword: (password: string) => api.post('/user/passwd', { password }),
+  changePassword: (password: string, oldPassword?: string) =>
+    api.post('/user/passwd', { password, ...(oldPassword ? { old_password: oldPassword } : {}) }),
   resetPassword: (params: { login?: string; email?: string }) => api.post('/user/passwd/reset', params),
   verifyResetToken: (token: string, login: string) => api.get('/user/passwd/reset/verify', { params: { token, login } }),
   resetPasswordWithToken: (token: string, login: string, password: string) => api.post('/user/passwd/reset/verify', { token, login, password }),

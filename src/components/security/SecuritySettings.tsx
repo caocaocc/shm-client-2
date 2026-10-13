@@ -10,14 +10,20 @@ import OtpSettings from './OtpSettings';
 import PasswordAuthSettings from './PasswordAuthSettings';
 import { useTelegramWebApp } from '../../hooks/useTelegramWebApp';
 import { config } from '../../config';
+import { useStore } from '../../store/useStore';
+import generateStrongPassword from '../../utils/PasswordGenerate';
 
 const otpEnabled = config.OTP_ENABLE === 'true';
 const passkeyEnabled = config.PASSKEY_AUTH_DISABLED === 'false' && config.PASSKEY_ENABLE === 'true';
 
 export default function SecuritySettings() {
   const { t } = useTranslation();
+  const logout = useStore((state) => state.logout);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [newPasswordVisible, setNewPasswordVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>('password');
   const { isInsideTelegramWebApp } = useTelegramWebApp();
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -31,22 +37,52 @@ export default function SecuritySettings() {
       });
       return;
     }
-    try {
-      await userApi.changePassword(newPassword);
-      setPasswordModalOpen(false);
-      setNewPassword('');
-      notifications.show({
-        title: t('common.success'),
-        message: t('profile.passwordChanged'),
-        color: 'green',
-      });
-    } catch {
+    if (newPassword !== confirmPassword) {
       notifications.show({
         title: t('common.error'),
-        message: t('profile.passwordChangeError'),
+        message: t('auth.passwordsMismatch'),
+        color: 'red',
+      });
+      return;
+    }
+    try {
+      await userApi.changePassword(newPassword, oldPassword);
+      closePasswordModal();
+      notifications.show({
+        title: t('common.success'),
+        message: t('profile.passwordChangedRelogin'),
+        color: 'green',
+      });
+      // Бэкенд при смене пароля удаляет все сессии пользователя — выходим и на клиенте
+      await logout();
+    } catch (error: any) {
+      const errMsg: string = error?.response?.data?.error || '';
+      notifications.show({
+        title: t('common.error'),
+        message: errMsg.includes('INVALID_OLD_PASSWORD')
+          ? t('profile.invalidOldPassword')
+          : errMsg.includes('OLD_PASSWORD_REQUIRED')
+            ? t('profile.enterCurrentPassword')
+            : t('profile.passwordChangeError'),
         color: 'red',
       });
     }
+  };
+
+  const closePasswordModal = () => {
+    setPasswordModalOpen(false);
+    setNewPassword('');
+    setOldPassword('');
+    setConfirmPassword('');
+    setNewPasswordVisible(false);
+  };
+
+  const handleGeneratePassword = () => {
+    const generated = generateStrongPassword();
+    setNewPassword(generated);
+    setConfirmPassword(generated);
+    setNewPasswordVisible(true);
+    notifications.show({ title: t('common.success'), message: t('auth.passwordGenerated'), color: 'green' });
   };
 
   const hasTelegramWidget = !isInsideTelegramWebApp;
@@ -130,18 +166,45 @@ export default function SecuritySettings() {
 
       <Modal
         opened={passwordModalOpen}
-        onClose={() => { setPasswordModalOpen(false); setNewPassword(''); }}
+        onClose={closePasswordModal}
         title={t('profile.changePassword')}
       >
         <Stack gap="md">
           <PasswordInput
-            label={t('profile.newPassword')}
-            placeholder={t('profile.newPasswordPlaceholder')}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            label={t('profile.currentPassword')}
+            placeholder={t('profile.enterCurrentPassword')}
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+            autoComplete="current-password"
+          />
+          <div>
+            <Group justify="space-between" mb={4}>
+              <Text component="label" size="sm" fw={500}>{t('profile.newPassword')}</Text>
+              <Text size="sm" c="blue" style={{ cursor: 'pointer' }} onClick={handleGeneratePassword}>
+                {t('auth.generatePassword')}
+              </Text>
+            </Group>
+            <PasswordInput
+              placeholder={t('profile.newPasswordPlaceholder')}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              visible={newPasswordVisible}
+              onVisibilityChange={setNewPasswordVisible}
+              autoComplete="new-password"
+            />
+          </div>
+          <PasswordInput
+            label={t('auth.confirmPasswordLabel')}
+            placeholder={t('auth.confirmPasswordPlaceholder')}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            visible={newPasswordVisible}
+            onVisibilityChange={setNewPasswordVisible}
+            error={confirmPassword && newPassword !== confirmPassword ? t('auth.passwordsMismatch') : undefined}
+            autoComplete="new-password"
           />
           <Group justify="flex-end">
-            <Button variant="light" onClick={() => { setPasswordModalOpen(false); setNewPassword(''); }}>
+            <Button variant="light" onClick={closePasswordModal}>
               {t('common.cancel')}
             </Button>
             <Button onClick={handleChangePassword}>
