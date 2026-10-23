@@ -1,3 +1,4 @@
+import { formatMoney, currencySymbol, paymentAmount, formatDateTime } from '../utils/display';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Timeline, Text, Stack, Group, Badge, Button, Divider, Modal, ActionIcon, Loader, Center, Paper, Title, Tabs, Code, Tooltip, Accordion, Box, Select, NumberInput, Pagination, TextInput } from '@mantine/core';
@@ -107,7 +108,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
   const [editingDescription, setEditingDescription] = useState(false);
   const [descriptionInput, setDescriptionInput] = useState(service.description || '');
   const [savingDescription, setSavingDescription] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const clipboard = useClipboard({ timeout: 1000 });
 
   const [forecastTotal, setForecastTotal] = useState<number | null>(null);
@@ -215,12 +216,17 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
   }, [isNotPaid, forecastTotal]);
 
   const handlePay = async () => {
+    const amount = paymentAmount(payAmount, 0.01);
+    if (!amount) {
+      notifications.show({ title: t('common.error'), message: t('payments.invalidAmount'), color: 'red' });
+      return;
+    }
     const paySystem = paySystems.find(ps => ps.shm_url === selectedPaySystem);
     if (!paySystem) return;
     setPaying(true);
     try {
       if (paySystem.internal || paySystem.recurring) {
-        const response = await fetch(paySystem.shm_url + payAmount, {
+        const response = await fetch(paySystem.shm_url + amount, {
           method: 'GET',
           credentials: 'include',
         });
@@ -232,7 +238,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
           notifications.show({ title: t('common.error'), message: data.msg_ru || data.msg || t('payments.paymentError'), color: 'red' });
         }
       } else {
-        window.open(paySystem.shm_url + payAmount, '_blank');
+        window.open(paySystem.shm_url + amount, '_blank');
       }
     } catch {
       notifications.show({ title: t('common.error'), message: t('payments.paymentError'), color: 'red' });
@@ -446,7 +452,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
             </Group>
             <Group justify="space-between">
               <Text size="sm" c="dimmed">{t('services.cost')}:</Text>
-              <Text size="sm">{service.service.cost} {t('common.currency')}</Text>
+              <Text size="sm">{formatMoney(service.service.cost)}</Text>
             </Group>
             <Group justify="space-between" align="flex-start" wrap="nowrap">
               <Text size="sm" c="dimmed" style={{ flexShrink: 0 }}>{t('services.description')}:</Text>
@@ -489,7 +495,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
             {service.expire && (
               <Group justify="space-between">
                 <Text size="sm" c="dimmed">{t('services.validUntil')}:</Text>
-                <Text size="sm">{new Date(service.expire as string).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')}</Text>
+                <Text size="sm">{formatDateTime(service.expire)}</Text>
               </Group>
             )}
             {service.next && (
@@ -498,7 +504,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                 {nextServiceLoading ? (
                   <Text size="sm">{t('common.loading')}</Text>
                 ) : nextServiceInfo ? (
-                  <Text size="sm">{nextServiceInfo.name} - {nextServiceInfo.cost} {t('common.currency')}</Text>
+                  <Text size="sm">{nextServiceInfo.name} - {formatMoney(nextServiceInfo.cost)}</Text>
                 ) : (
                   <Text size="sm">{service.next}</Text>
                 )}
@@ -672,7 +678,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                     <IconWallet size={18} />
                     <Text fw={500}>{t('services.amountToPay')}</Text>
                   </Group>
-                  <Text fw={700} size="lg" c="red">{forecastTotal.toFixed(2)} {t('common.currency')}</Text>
+                  <Text fw={700} size="lg" c="red">{formatMoney(forecastTotal)}</Text>
                 </Group>
                 {paySystemsLoading ? (
                   <Group justify="center" py="xs">
@@ -691,10 +697,11 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                       label={t('payments.amount')}
                       value={payAmount}
                       onChange={setPayAmount}
-                      min={1}
-                      step={10}
+                      min={0.01}
+                      step={0.01}
                       decimalScale={2}
-                      suffix=" ₽"
+                      fixedDecimalScale
+                      suffix={` ${currencySymbol()}`}
                       size="sm"
                     />
                     <Button
@@ -702,9 +709,9 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                       leftSection={<IconCreditCard size={18} />}
                       onClick={handlePay}
                       loading={paying}
-                      disabled={!selectedPaySystem}
+                      disabled={!selectedPaySystem || !paymentAmount(payAmount)}
                     >
-                      {t('services.payService', { amount: payAmount })}
+                      {t('services.payService', { amount: formatMoney(payAmount) })}
                     </Button>
                   </>
                 ) : null}
@@ -779,7 +786,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
 }
 
 function ServiceCard({ service, onClick, isChild = false, isLastChild = false }: { service: UserService; onClick: () => void; isChild?: boolean; isLastChild?: boolean }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const statusColor = statusColors[service.status] || 'gray';
   const statusLabel = t(`status.${service.status}`, service.status);
 
@@ -829,13 +836,13 @@ function ServiceCard({ service, onClick, isChild = false, isLastChild = false }:
               </Text>
               {service.expire && (
                 <Text size="xs" c="dimmed">
-                  {new Date(service.expire as string).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')}
+                  {formatDateTime(service.expire)}
                 </Text>
               )}
             </div>
             <Group gap="sm">
               {service.service.cost > 0 && (
-                <Text size="sm" c="dimmed">{service.service.cost} {t('common.currency')}</Text>
+                <Text size="sm" c="dimmed">{formatMoney(service.service.cost)}</Text>
               )}
               <Badge color={statusColor} variant="light" size="sm">
                 {statusLabel}
@@ -863,13 +870,13 @@ function ServiceCard({ service, onClick, isChild = false, isLastChild = false }:
           </Text>
           {service.expire && (
             <Text size="xs" c="dimmed">
-              {new Date(service.expire as string).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')}
+              {formatDateTime(service.expire)}
             </Text>
           )}
         </div>
         <Group gap="sm">
           {service.service.cost > 0 && (
-            <Text size="sm" c="dimmed">{service.service.cost} {t('common.currency')}</Text>
+            <Text size="sm" c="dimmed">{formatMoney(service.service.cost)}</Text>
           )}
           <Badge color={statusColor} variant="light">
             {statusLabel}

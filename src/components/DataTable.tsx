@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { Table, Text, Center, Group } from '@mantine/core';
 import { IconChevronUp, IconChevronDown, IconArrowsUpDown } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
 
 export interface Column<T> {
   title: ReactNode;
@@ -23,6 +24,7 @@ export default function DataTable<T extends Record<string, any>>(
   props: DataTableProps<T>,
 ) {
   const { data, columns, sortField, sortDirection, onSort } = props;
+  const { t } = useTranslation();
 
   const handleSort = (accessor: string, sortKey?: string) => {
     if (!onSort) return;
@@ -82,7 +84,7 @@ export default function DataTable<T extends Record<string, any>>(
         {data.length === 0 && (
           <Table.Tr>
             <Table.Td colSpan={columns.length}>
-              <Center>No data</Center>
+              <Center>{t('common.noData')}</Center>
             </Table.Td>
           </Table.Tr>
         )}

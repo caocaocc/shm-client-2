@@ -1,3 +1,4 @@
+import { currencySymbol, paymentAmount } from '../utils/display';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Stack, Group, Button, Text, NumberInput, Select, Loader, ActionIcon, Badge, Card } from '@mantine/core';
@@ -101,6 +102,11 @@ export default function PayModal({ opened, onClose, initialAmount }: PayModalPro
   };
 
   const handlePay = async () => {
+    const amount = paymentAmount(payAmount, 0.01);
+    if (!amount) {
+      notifications.show({ title: t('common.error'), message: t('payments.invalidAmount'), color: 'red' });
+      return;
+    }
     const paySystem = paySystems.find(ps => ps.shm_url === selectedPaySystem);
     if (!paySystem) {
       notifications.show({
@@ -114,7 +120,7 @@ export default function PayModal({ opened, onClose, initialAmount }: PayModalPro
     if (paySystem.internal || paySystem.recurring) {
       setProcessing(true);
       try {
-        const response = await fetch(paySystem.shm_url + payAmount, {
+        const response = await fetch(paySystem.shm_url + amount, {
           method: 'GET',
           credentials: 'include',
         });
@@ -144,7 +150,7 @@ export default function PayModal({ opened, onClose, initialAmount }: PayModalPro
         setProcessing(false);
       }
     } else {
-      window.open(paySystem.shm_url + payAmount, '_blank');
+      window.open(paySystem.shm_url + amount, '_blank');
       onClose();
     }
   };
@@ -206,16 +212,17 @@ export default function PayModal({ opened, onClose, initialAmount }: PayModalPro
               placeholder={t('payments.enterAmount')}
               value={payAmount}
               onChange={setPayAmount}
-              min={1}
-              step={10}
+              min={0.01}
+              step={0.01}
               decimalScale={2}
-              suffix=" ₽"
+              fixedDecimalScale
+              suffix={` ${currencySymbol()}`}
             />
             <Group justify="flex-end">
               <Button variant="light" onClick={onClose} disabled={processing}>
                 {t('common.cancel')}
               </Button>
-              <Button onClick={handlePay} disabled={!selectedPaySystem} loading={processing}>
+              <Button onClick={handlePay} disabled={!selectedPaySystem || !paymentAmount(payAmount)} loading={processing}>
                 {t('payments.pay')}
               </Button>
             </Group>
