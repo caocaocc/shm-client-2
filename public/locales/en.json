@@ -24,7 +24,7 @@
     "copy": "Copy",
     "copied": "Copied!",
     "or": "or",
-    "currency": "₽",
+    "currency": "¥",
     "months": "mo.",
     "days": "d.",
     "hours": "h.",
@@ -43,7 +43,15 @@
     "publicOffer": "Public offer",
     "userAgreement": "User agreement",
     "contacts": "Contacts",
-    "document": "Document"
+    "document": "Document",
+    "logout": "Logout",
+    "confirmation": "Confirmation",
+    "changeLanguage": "Change language",
+    "currentLanguage": "Current language: {{language}}",
+    "toggleTheme": "Toggle color scheme",
+    "pushNotifications": "Push notifications",
+    "noData": "No data",
+    "version": "Version"
   },
   "auth": {
     "login": "Login",
@@ -226,7 +234,12 @@
     "oauth2Unbind": "Account successfully unlinked",
     "oauth2UnbindError": "Failed to unlink account",
     "oauth2WaitTitle": "Waiting for confirmation",
-    "oauth2WaitDescription": "You will be returned automatically once confirmed."
+    "oauth2WaitDescription": "You will be returned automatically once confirmed.",
+    "telegramUnlinked": "Telegram unlinked",
+    "telegramUnlinkError": "Failed to unlink Telegram",
+    "pushPermissionDenied": "Notification permission denied",
+    "pushSubscribeError": "Failed to subscribe to notifications",
+    "pushUnsubscribeError": "Failed to unsubscribe from notifications"
   },
   "services": {
     "title": "My Services",
@@ -276,10 +289,10 @@
     "serviceStopped": "Service stopped",
     "serviceStopError": "Failed to stop service",
     "amountToPay": "Amount to pay",
-    "payService": "Pay {{amount}} ₽",
-    "savings": "You save {{amount}} ₽ with discount",
-    "savings_bonus": "We will credit {{amount}} ₽ in bonuses",
-    "profit": "Your profit is {{amount}} ₽ considering discount and bonuses",
+    "payService": "Pay {{amount}}",
+    "savings": "You save {{amount}} with discount",
+    "savings_bonus": "We will credit {{amount}} in bonuses",
+    "profit": "Your profit is {{amount}} considering discount and bonuses",
     "emailNotVerifiedtitle": "Email not verified",
     "emailNotVerifiedDesc": "To order services, you need to verify your email address. Please verify your email to continue.",
     "emailNotVerifiedAction": "Confirm email"
@@ -327,7 +340,8 @@
     "autopaymentDeleteError": "Failed to delete autopayment",
     "paymentSuccess": "Payment completed successfully",
     "internalPaymentSuccess": "Payment request completed",
-    "paymentError": "Payment failed"
+    "paymentError": "Payment failed",
+    "invalidAmount": "Enter a valid amount with no more than two decimal places"
   },
   "order": {
     "title": "Order service",
@@ -337,12 +351,12 @@
     "period": "Period",
     "yourBalance": "Your balance",
     "enoughToPay": "Enough to pay",
-    "needTopUp": "Need to top up {{amount}} ₽",
-    "orderFor": "Order for {{amount}} ₽",
+    "needTopUp": "Need to top up {{amount}}",
+    "orderFor": "Order for {{amount}}",
     "topUpBalance": "Top up balance",
     "minimum": "Minimum",
     "missingAmount": "missing amount",
-    "orderAndPay": "Order and pay {{amount}} ₽",
+    "orderAndPay": "Order and pay {{amount}}",
     "noServicesAvailable": "No services available for order",
     "loadError": "Failed to load services list",
     "orderSuccess": "Service \"{{name}}\" ordered and paid from balance",
@@ -361,7 +375,7 @@
     "enterCode": "Enter promo code",
     "applied": "Promo code applied",
     "applyError": "Failed to apply promo code",
-    "success": "Promo code \"{{code}}\" applied! {{amount}} ₽ credited",
+    "success": "Promo code \"{{code}}\" applied! {{amount}} credited",
     "error": "Invalid promo code or it has already been used"
   },
   "withdrawals": {
@@ -513,5 +527,13 @@
     "code": "en",
     "label": "English",
     "flag": "🇺🇸"
+  },
+  "homeScreen": {
+    "title": "Add {{appName}} to your home screen",
+    "tap": "Tap",
+    "toolbar": "in the toolbar",
+    "bottomBar": "in the bottom bar",
+    "choose": "Choose",
+    "add": "Add to Home Screen"
   }
 }

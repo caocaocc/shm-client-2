@@ -16,7 +16,7 @@ self.addEventListener('push', (event) => {
     data = { body: event.data.text() }
   }
 
-  const { title = 'Уведомление', body = '', icon, badge, url = '/', tag } = data
+  const { title = '通知', body = '', icon, badge, url = '/', tag } = data
 
   event.waitUntil(
     self.registration.showNotification(title, {

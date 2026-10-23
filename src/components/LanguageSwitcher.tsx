@@ -15,7 +15,7 @@ function countLeafKeys(obj: unknown): number {
 }
 
 export default function LanguageSwitcher() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toggleDirection, dir } = useDirection();
 
   if (config.SINGLE_LANGUAGE === 'true') return null;
@@ -59,7 +59,7 @@ export default function LanguageSwitcher() {
   return (
     <Menu shadow="md" width={150}>
       <Menu.Target>
-        <ActionIcon variant="default" size="lg" aria-label="Change language" title={`Current language: ${currentLang?.label}`}>
+        <ActionIcon variant="default" size="lg" aria-label={t('common.changeLanguage')} title={t('common.currentLanguage', { language: currentLang?.label })}>
           <IconLanguage size={18} />
         </ActionIcon>
       </Menu.Target>

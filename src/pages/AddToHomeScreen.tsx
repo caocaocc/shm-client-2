@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { config } from '../config';
+import { useTranslation } from 'react-i18next';
 
 function detectDevice() {
   const ua = navigator.userAgent;
@@ -14,6 +15,7 @@ function getIOSVersion(ua: string): number {
 }
 
 export default function AddToHomeScreen() {
+  const { t } = useTranslation();
   const { isIPad, isIPhone } = detectDevice();
   const ua = navigator.userAgent;
   const iosVer = getIOSVersion(ua);
@@ -145,44 +147,44 @@ export default function AddToHomeScreen() {
           </div>
 
           <div className="pwa-content">
-            <h1>Добавьте {appName} на экран «Домой»</h1>
+            <h1>{t('homeScreen.title', { appName })}</h1>
             <ol className="pwa-tool-tips">
               <li>
-                Нажмите{' '}
+                {t('homeScreen.tap')}{' '}
                 <b>
                   <svg className="pwa-icon">
                     <use href="#pwa-icon-share" />
                   </svg>
                 </b>{' '}
-                в панели инструментов
+                {t('homeScreen.toolbar')}
               </li>
               <li>
-                Выберите{' '}
+                {t('homeScreen.choose')}{' '}
                 <b>
                   <svg className="pwa-icon pwa-add-icon">
                     <use href="#pwa-icon-add" />
                   </svg>{' '}
-                  На экран «Домой»
+                  {t('homeScreen.add')}
                 </b>
               </li>
             </ol>
             <ol className="pwa-bottom-tips">
               <li>
-                Нажмите{' '}
+                {t('homeScreen.tap')}{' '}
                 <b>
                   <svg className="pwa-icon">
                     <use href="#pwa-icon-share" />
                   </svg>
                 </b>{' '}
-                в нижней панели
+                {t('homeScreen.bottomBar')}
               </li>
               <li>
-                Выберите{' '}
+                {t('homeScreen.choose')}{' '}
                 <b>
                   <svg className="pwa-icon pwa-add-icon">
                     <use href="#pwa-icon-add" />
                   </svg>{' '}
-                  На экран «Домой»
+                  {t('homeScreen.add')}
                 </b>
               </li>
             </ol>

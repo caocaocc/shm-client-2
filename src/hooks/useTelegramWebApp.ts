@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react';
-import i18n from '../i18n';
 
 const STORAGE_KEY = 'isInsideTelegramWebApp';
-const SUPPORTED_LANGUAGES = ['ru', 'en'];
-const DEFAULT_LANGUAGE = 'ru';
 
 declare global {
   interface Window {
@@ -64,19 +61,6 @@ function setStoredValue(value: boolean): void {
   }
 }
 
-function setLanguageFromTelegram(): void {
-  const tgWebApp = window.Telegram?.WebApp;
-  const languageCode = tgWebApp?.initDataUnsafe?.user?.language_code;
-
-  if (languageCode) {
-    const lang = SUPPORTED_LANGUAGES.includes(languageCode) ? languageCode : DEFAULT_LANGUAGE;
-
-    if (i18n.language !== lang) {
-      i18n.changeLanguage(lang);
-    }
-  }
-}
-
 export function useTelegramWebApp() {
   const [isInsideTelegramWebApp, setIsInsideTelegramWebApp] = useState<boolean>(() => {
     const cached = getStoredValue();
@@ -92,9 +76,8 @@ export function useTelegramWebApp() {
       setIsInsideTelegramWebApp(isInside);
       setStoredValue(isInside);
 
-      if (isInside) {
-        setLanguageFromTelegram();
-      }
+      // Language is selected centrally from site default and saved preference.
+      // Telegram account language must not overwrite an explicit UI choice.
     };
     checkAndStore();
     const timer = setTimeout(checkAndStore, 100);

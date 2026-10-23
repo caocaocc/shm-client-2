@@ -24,7 +24,7 @@
     "copy": "Копировать",
     "copied": "Скопировано!",
     "or": "или",
-    "currency": "₽",
+    "currency": "¥",
     "months": "мес.",
     "days": "дн.",
     "hours": "ч.",
@@ -47,7 +47,15 @@
     "publicOffer": "Договор оферты",
     "userAgreement": "Пользовательское соглашение",
     "contacts": "Контакты",
-    "document": "Документ"
+    "document": "Документ",
+    "logout": "Выйти",
+    "confirmation": "Подтверждение",
+    "changeLanguage": "Сменить язык",
+    "currentLanguage": "Текущий язык: {{language}}",
+    "toggleTheme": "Сменить тему",
+    "pushNotifications": "Уведомления",
+    "noData": "Нет данных",
+    "version": "Версия"
   },
   "auth": {
     "login": "Войти",
@@ -230,7 +238,12 @@
     "oauth2Unbind": "Аккаунт успешно отвязан",
     "oauth2UnbindError": "Не удалось отвязать аккаунт",
     "oauth2WaitTitle": "Ожидание подтверждения",
-    "oauth2WaitDescription": "После подтверждения вы будете автоматически возвращены в кабинет."
+    "oauth2WaitDescription": "После подтверждения вы будете автоматически возвращены в кабинет.",
+    "telegramUnlinked": "Telegram успешно отвязан",
+    "telegramUnlinkError": "Не удалось отвязать Telegram",
+    "pushPermissionDenied": "Разрешение на уведомления отклонено",
+    "pushSubscribeError": "Не удалось подписаться на уведомления",
+    "pushUnsubscribeError": "Не удалось отписаться от уведомлений"
   },
   "services": {
     "title": "Мои услуги",
@@ -280,10 +293,10 @@
     "serviceStopped": "Услуга остановлена",
     "serviceStopError": "Не удалось остановить услугу",
     "amountToPay": "К оплате",
-    "payService": "Оплатить {{amount}} ₽",
-    "savings": "Вы экономите {{amount}} ₽ с учётом скидки",
-    "savings_bonus": "Спишем {{amount}} ₽ бонусами",
-    "profit": "Ваша выгода {{amount}} ₽ с учётом скидки и бонусов",
+    "payService": "Оплатить {{amount}}",
+    "savings": "Вы экономите {{amount}} с учётом скидки",
+    "savings_bonus": "Спишем {{amount}} бонусами",
+    "profit": "Ваша выгода {{amount}} с учётом скидки и бонусов",
     "emailNotVerifiedtitle": "Не удалось подтвердить email",
     "emailNotVerifiedDesc": "Для заказа услуги необходимо подтвердить email.",
     "emailNotVerifiedAction": "Подтвердить email"
@@ -331,7 +344,8 @@
     "autopaymentDeleteError": "Не удалось удалить автоплатёж",
     "paymentSuccess": "Платёж проведён успешно",
     "internalPaymentSuccess": "Запрос на оплату выполнен",
-    "paymentError": "Ошибка при проведении платежа"
+    "paymentError": "Ошибка при проведении платежа",
+    "invalidAmount": "Введите корректную сумму с точностью до двух знаков"
   },
   "order": {
     "title": "Заказать услугу",
@@ -341,12 +355,12 @@
     "period": "Период",
     "yourBalance": "Ваш баланс",
     "enoughToPay": "Достаточно для оплаты",
-    "needTopUp": "Нужно пополнить на {{amount}} ₽",
-    "orderFor": "Заказать за {{amount}} ₽",
+    "needTopUp": "Нужно пополнить на {{amount}}",
+    "orderFor": "Заказать за {{amount}}",
     "topUpBalance": "Пополнить баланс",
     "minimum": "Минимум",
     "missingAmount": "недостающая сумма",
-    "orderAndPay": "Заказать и оплатить {{amount}} ₽",
+    "orderAndPay": "Заказать и оплатить {{amount}}",
     "noServicesAvailable": "Нет доступных услуг для заказа",
     "loadError": "Не удалось загрузить список услуг",
     "orderSuccess": "Услуга \"{{name}}\" заказана и оплачена с баланса",
@@ -365,7 +379,7 @@
     "enterCode": "Введите промокод",
     "applied": "Промокод применён",
     "applyError": "Не удалось применить промокод",
-    "success": "Промокод \"{{code}}\" применён! Начислено {{amount}} ₽",
+    "success": "Промокод \"{{code}}\" применён! Начислено {{amount}}",
     "error": "Неверный промокод или он уже был использован"
   },
   "withdrawals": {
@@ -517,5 +531,13 @@
     "code": "ru",
     "label": "Русский",
     "flag": "🇷🇺"
+  },
+  "homeScreen": {
+    "title": "Добавьте {{appName}} на экран «Домой»",
+    "tap": "Нажмите",
+    "toolbar": "в панели инструментов",
+    "bottomBar": "в нижней панели",
+    "choose": "Выберите",
+    "add": "На экран «Домой»"
   }
 }

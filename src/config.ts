@@ -1,3 +1,5 @@
+import { resolveDefaultLanguage } from './i18n/language';
+
 interface AppConfig {
   APP_NAME: string;
   APP_DESCRIPTION: string;
@@ -15,6 +17,8 @@ interface AppConfig {
   DEFAULT_LANGUAGE: string;
   SINGLE_LANGUAGE: string;
   CUSTOM_LANGS: string;
+  CURRENCY: string;
+  TIMEZONE: string;
   SHM_BASE_PATH: string;
   OTP_ENABLE: string;
   PASSKEY_ENABLE: string;
@@ -88,6 +92,7 @@ declare global {
 
 function getConfig(): AppConfig {
   const runtimeConfig = window.__APP_CONFIG__;
+  const singleLanguage = runtimeConfig?.SINGLE_LANGUAGE || import.meta.env.VITE_SINGLE_LANGUAGE || undefined;
 
   return {
     APP_NAME: runtimeConfig?.APP_NAME || import.meta.env.VITE_APP_NAME || 'SHM Client',
@@ -103,9 +108,11 @@ function getConfig(): AppConfig {
     TERMS_OF_USE_URL: runtimeConfig?.TERMS_OF_USE_URL || import.meta.env.VITE_TERMS_OF_USE_URL || undefined,
     PUBLIC_OFFER_URL: runtimeConfig?.PUBLIC_OFFER_URL || import.meta.env.VITE_PUBLIC_OFFER_URL || undefined,
     USER_AGREEMENT_URL: runtimeConfig?.USER_AGREEMENT_URL || import.meta.env.VITE_USER_AGREEMENT_URL || undefined,
-    DEFAULT_LANGUAGE: runtimeConfig?.DEFAULT_LANGUAGE || import.meta.env.VITE_DEFAULT_LANGUAGE || 'ru',
-    SINGLE_LANGUAGE: runtimeConfig?.SINGLE_LANGUAGE || import.meta.env.VITE_SINGLE_LANGUAGE || undefined,
+    DEFAULT_LANGUAGE: resolveDefaultLanguage(runtimeConfig?.DEFAULT_LANGUAGE, import.meta.env.VITE_DEFAULT_LANGUAGE, singleLanguage === 'true'),
+    SINGLE_LANGUAGE: singleLanguage,
     CUSTOM_LANGS: runtimeConfig?.CUSTOM_LANGS || import.meta.env.VITE_CUSTOM_LANGS || '',
+    CURRENCY: runtimeConfig?.CURRENCY || import.meta.env.VITE_BILLING_CURRENCY || import.meta.env.VITE_CURRENCY || 'CNY',
+    TIMEZONE: runtimeConfig?.TIMEZONE || import.meta.env.VITE_TIMEZONE || 'Asia/Shanghai',
     SHM_BASE_PATH: runtimeConfig?.SHM_BASE_PATH || import.meta.env.VITE_SHM_BASE_PATH || '/',
     OTP_ENABLE: runtimeConfig?.OTP_ENABLE || import.meta.env.VITE_OTP_ENABLE || 'true',
     PASSKEY_ENABLE: runtimeConfig?.PASSKEY_ENABLE || import.meta.env.VITE_PASSKEY_ENABLE || 'true',
@@ -144,18 +151,18 @@ function getConfig(): AppConfig {
     PROXY_APP_MAC_URL: runtimeConfig?.PROXY_APP_MAC_URL || import.meta.env.VITE_PROXY_APP_MAC_URL || undefined,
     PROXY_APP_IOS_URL: runtimeConfig?.PROXY_APP_IOS_URL || import.meta.env.VITE_PROXY_APP_IOS_URL || undefined,
     PROXY_APP_ANDROID_URL: runtimeConfig?.PROXY_APP_ANDROID_URL || import.meta.env.VITE_PROXY_APP_ANDROID_URL || undefined,
-    VPN_WINDOWS_APP_NAME: runtimeConfig?.VPN_WINDOWS_APP_NAME || import.meta.env.VITE_VPN_WINDOWS_APP_NAME || 'Скачать',
-    VPN_LINUX_APP_NAME: runtimeConfig?.VPN_LINUX_APP_NAME || import.meta.env.VITE_VPN_LINUX_APP_NAME || 'Скачать',
-    VPN_MAC_APP_NAME: runtimeConfig?.VPN_MAC_APP_NAME || import.meta.env.VITE_VPN_MAC_APP_NAME || 'Скачать',
-    VPN_IOS_APP_NAME: runtimeConfig?.VPN_IOS_APP_NAME || import.meta.env.VITE_VPN_IOS_APP_NAME || 'Скачать',
-    VPN_ANDROID_APP_NAME: runtimeConfig?.VPN_ANDROID_APP_NAME || import.meta.env.VITE_VPN_ANDROID_APP_NAME || 'Скачать',
-    PROXY_WINDOWS_APP_NAME: runtimeConfig?.PROXY_WINDOWS_APP_NAME || import.meta.env.VITE_PROXY_WINDOWS_APP_NAME || 'Скачать',
-    PROXY_LINUX_APP_NAME: runtimeConfig?.PROXY_LINUX_APP_NAME || import.meta.env.VITE_PROXY_LINUX_APP_NAME || 'Скачать',
-    PROXY_MAC_APP_NAME: runtimeConfig?.PROXY_MAC_APP_NAME || import.meta.env.VITE_PROXY_MAC_APP_NAME || 'Скачать',
-    PROXY_IOS_APP_NAME: runtimeConfig?.PROXY_IOS_APP_NAME || import.meta.env.VITE_PROXY_IOS_APP_NAME || 'Скачать',
-    PROXY_ANDROID_APP_NAME: runtimeConfig?.PROXY_ANDROID_APP_NAME || import.meta.env.VITE_PROXY_ANDROID_APP_NAME || 'Скачать',
-    APPLE_TV_APP_NAME: runtimeConfig?.APPLE_TV_APP_NAME || import.meta.env.VITE_APPLE_TV_APP_NAME || 'Скачать',
-    ANDROID_TV_APP_NAME: runtimeConfig?.ANDROID_TV_APP_NAME || import.meta.env.VITE_ANDROID_TV_APP_NAME || 'Скачать',
+    VPN_WINDOWS_APP_NAME: runtimeConfig?.VPN_WINDOWS_APP_NAME || import.meta.env.VITE_VPN_WINDOWS_APP_NAME || '',
+    VPN_LINUX_APP_NAME: runtimeConfig?.VPN_LINUX_APP_NAME || import.meta.env.VITE_VPN_LINUX_APP_NAME || '',
+    VPN_MAC_APP_NAME: runtimeConfig?.VPN_MAC_APP_NAME || import.meta.env.VITE_VPN_MAC_APP_NAME || '',
+    VPN_IOS_APP_NAME: runtimeConfig?.VPN_IOS_APP_NAME || import.meta.env.VITE_VPN_IOS_APP_NAME || '',
+    VPN_ANDROID_APP_NAME: runtimeConfig?.VPN_ANDROID_APP_NAME || import.meta.env.VITE_VPN_ANDROID_APP_NAME || '',
+    PROXY_WINDOWS_APP_NAME: runtimeConfig?.PROXY_WINDOWS_APP_NAME || import.meta.env.VITE_PROXY_WINDOWS_APP_NAME || '',
+    PROXY_LINUX_APP_NAME: runtimeConfig?.PROXY_LINUX_APP_NAME || import.meta.env.VITE_PROXY_LINUX_APP_NAME || '',
+    PROXY_MAC_APP_NAME: runtimeConfig?.PROXY_MAC_APP_NAME || import.meta.env.VITE_PROXY_MAC_APP_NAME || '',
+    PROXY_IOS_APP_NAME: runtimeConfig?.PROXY_IOS_APP_NAME || import.meta.env.VITE_PROXY_IOS_APP_NAME || '',
+    PROXY_ANDROID_APP_NAME: runtimeConfig?.PROXY_ANDROID_APP_NAME || import.meta.env.VITE_PROXY_ANDROID_APP_NAME || '',
+    APPLE_TV_APP_NAME: runtimeConfig?.APPLE_TV_APP_NAME || import.meta.env.VITE_APPLE_TV_APP_NAME || '',
+    ANDROID_TV_APP_NAME: runtimeConfig?.ANDROID_TV_APP_NAME || import.meta.env.VITE_ANDROID_TV_APP_NAME || '',
     WINDOWS_PROXY_URL_SCHEMA: runtimeConfig?.WINDOWS_PROXY_URL_SCHEMA || import.meta.env.VITE_WINDOWS_PROXY_URL_SCHEMA || undefined,
     LINUX_PROXY_URL_SCHEMA: runtimeConfig?.LINUX_PROXY_URL_SCHEMA || import.meta.env.VITE_LINUX_PROXY_URL_SCHEMA || undefined,
     MAC_PROXY_URL_SCHEMA: runtimeConfig?.MAC_PROXY_URL_SCHEMA || import.meta.env.VITE_MAC_PROXY_URL_SCHEMA || undefined,
