@@ -3,6 +3,37 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { formatMoney, currencySymbol, paymentAmount, requiredTopUp, parseBackendDate, formatDate, formatDateTime, parsePeriod } from './format.ts';
 import { selectLanguage, resolveDefaultLanguage, BUILT_IN_LANGS } from '../i18n/language.ts';
+import { currencyCode, readBillingCurrency, loadBillingCurrency } from './billing.ts';
+
+test('ledger currency comes from the public system metadata without relabelling RUB as CNY', async () => {
+  assert.equal(currencyCode(' rub '), 'RUB');
+  assert.equal(readBillingCurrency({ status: 200, data: [{ billing: { currency: 'RUB' } }] }), 'RUB');
+  assert.equal(readBillingCurrency({ data: { billing: { currency: 'CNY' } } }), 'CNY');
+  assert.equal(readBillingCurrency({ billing: { currency: 'EUR' } }), 'EUR');
+  assert.match(formatMoney('-21.56', 'zh-CN', await loadBillingCurrency('', async () => ({ data: [{ billing: { currency: 'RUB' } }] }))), /RUB|₽/);
+  assert.equal(await loadBillingCurrency('CNY', async () => ({ data: [{ billing: { currency: 'RUB' } }] })), 'RUB');
+  assert.equal(await loadBillingCurrency('RUB', async () => ({ data: [{ billing: { currency: 'CNY' } }] })), 'CNY');
+  assert.equal(await loadBillingCurrency('EUR', async () => ({ data: [{}] })), 'EUR');
+  assert.equal(await loadBillingCurrency('CNY', async () => { throw new Error('legacy metadata unavailable'); }), 'CNY');
+  assert.equal(await loadBillingCurrency('invalid', async () => ({ data: [{ billing: { currency: 'RUB' } }] })), 'RUB');
+});
+
+test('pending, failed and legacy metadata never add a guessed currency symbol', async () => {
+  for (const payload of [undefined, null, {}, { data: [] }, { data: [{ billing: {} }] }, { data: [{ billing: { currency: '<RUB>' } }] }]) {
+    const currency = await loadBillingCurrency('', async () => payload);
+    assert.equal(currency, '');
+    assert.equal(formatMoney('1234.50', 'zh-CN', currency), '—');
+    assert.equal(currencySymbol('zh-CN', currency), '—');
+  }
+  assert.equal(await loadBillingCurrency('', async () => { throw new Error('network unavailable'); }), '');
+  let resolve!: (value: unknown) => void;
+  let currency = '';
+  const pending = loadBillingCurrency('', () => new Promise(done => { resolve = done; })).then(value => { currency = value; });
+  assert.equal(formatMoney('1234.50', 'zh-CN', currency), '—');
+  resolve({ data: [{ billing: { currency: 'CNY' } }] });
+  await pending;
+  assert.equal(formatMoney('1234.50', 'zh-CN', currency), '¥1,234.50');
+});
 
 test('first visit uses Chinese and subsequent visits respect saved language', () => {
   assert.equal(selectLanguage('zh-CN', null), 'zh-CN');

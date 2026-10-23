@@ -1,4 +1,5 @@
 import { resolveDefaultLanguage } from './i18n/language';
+import { currencyCode } from './utils/billing';
 
 interface AppConfig {
   APP_NAME: string;
@@ -111,7 +112,7 @@ function getConfig(): AppConfig {
     DEFAULT_LANGUAGE: resolveDefaultLanguage(runtimeConfig?.DEFAULT_LANGUAGE, import.meta.env.VITE_DEFAULT_LANGUAGE, singleLanguage === 'true'),
     SINGLE_LANGUAGE: singleLanguage,
     CUSTOM_LANGS: runtimeConfig?.CUSTOM_LANGS || import.meta.env.VITE_CUSTOM_LANGS || '',
-    CURRENCY: runtimeConfig?.CURRENCY || import.meta.env.VITE_BILLING_CURRENCY || import.meta.env.VITE_CURRENCY || 'CNY',
+    CURRENCY: currencyCode(runtimeConfig?.CURRENCY) || currencyCode(import.meta.env.VITE_BILLING_CURRENCY) || currencyCode(import.meta.env.VITE_CURRENCY),
     TIMEZONE: runtimeConfig?.TIMEZONE || import.meta.env.VITE_TIMEZONE || 'Asia/Shanghai',
     SHM_BASE_PATH: runtimeConfig?.SHM_BASE_PATH || import.meta.env.VITE_SHM_BASE_PATH || '/',
     OTP_ENABLE: runtimeConfig?.OTP_ENABLE || import.meta.env.VITE_OTP_ENABLE || 'true',

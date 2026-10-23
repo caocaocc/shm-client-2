@@ -10,7 +10,8 @@ import { IconLogout, IconHeadset, IconBell, IconBellOff, IconWallet } from '@tab
 import { useTranslation } from 'react-i18next';
 import { useStore } from './store/useStore';
 import { NAV_ITEMS } from './constants/navigation';
-import { auth } from './api/client';
+import { auth, systemApi } from './api/client';
+import { loadBillingCurrency } from './utils/billing';
 import { removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
 import { config } from './config';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -39,6 +40,8 @@ import Tickets from './pages/Tickets.tsx';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import AddToHomeScreen from './pages/AddToHomeScreen';
+
+const configuredCurrency = config.CURRENCY;
 
 function AppContent() {
   const location = useLocation();
@@ -127,6 +130,9 @@ function AppContent() {
     if (hasAddToHomeScreen) { setIsLoading(false); return; }
     let cancelled = false;
     const checkAuth = async () => {
+      const billingRequest = loadBillingCurrency(configuredCurrency, async () =>
+        (await systemApi.getAuthConfig()).data,
+      ).then(currency => { if (!cancelled) config.CURRENCY = currency; });
       try {
         const response = await auth.getCurrentUser();
         const responseData = response.data.data;
@@ -138,6 +144,7 @@ function AppContent() {
           removeCookie();
         }
       } finally {
+        await billingRequest;
         if (!cancelled) setIsLoading(false);
       }
     };
