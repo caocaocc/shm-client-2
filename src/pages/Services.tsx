@@ -13,6 +13,8 @@ import ConfirmModal from '../components/ConfirmModal';
 import AppDownloadBlock from '../components/AppDownloadBlock';
 import SubscriptionSummary from '../components/SubscriptionSummary';
 import { useServiceConnection } from '../hooks/useServiceConnection';
+import { useServiceRouting } from '../hooks/useServiceRouting';
+import ServiceRoutingPanel from '../components/ServiceRoutingPanel';
 import { config } from '../config';
 import { useStore } from '../store/useStore';
 import { isTelegramWebApp } from '../constants/webapp';
@@ -97,6 +99,7 @@ interface ServiceDetailProps {
 function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated }: ServiceDetailProps) {
   const category = normalizeCategory(service.service.category);
   const connection = useServiceConnection(service.user_service_id, category, service.status);
+  const routing = useServiceRouting(service.user_service_id);
   const storageData = connection.vpnConfig;
   const subscriptionUrl = connection.subscription?.url || null;
   const [nextServiceInfo, setNextServiceInfo] = useState<{ name: string; cost: number } | null>(null);
@@ -379,7 +382,10 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
   const isVpn = category === 'vpn';
   const isProxy = category === 'proxy';
   const isVpnOrProxy = isVpn || isProxy;
-  const visibleTab = service.status === 'ACTIVE' ? activeTab : 'info';
+  const showRouting = routing.loading || routing.failed || routing.options?.supported;
+  const visibleTab = activeTab === 'routing'
+    ? (showRouting ? 'routing' : 'info')
+    : (service.status === 'ACTIVE' ? activeTab : 'info');
   const statusColor = statusColors[service.status] || 'gray';
   const statusLabel = t(`status.${service.status}`, service.status);
   const urlSchema = isProxy && config[`${detectPlatform()}_PROXY_URL_SCHEMA` as keyof typeof config];
@@ -408,6 +414,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
         <Tabs.List style={{ flexWrap: 'wrap' }}>
           <Tabs.Tab value="info">{t('services.info')}</Tabs.Tab>
           {isVpnOrProxy && service.status === 'ACTIVE' && <Tabs.Tab value="config">{t('services.connection')}</Tabs.Tab>}
+          {showRouting && <Tabs.Tab value="routing" disabled={routing.loading}>{t('routing.title')}</Tabs.Tab>}
         </Tabs.List>
 
         <Tabs.Panel value="info" pt="md">
@@ -648,9 +655,22 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
             </Stack>
           </Tabs.Panel>
         )}
+        {showRouting && <Tabs.Panel value="routing" pt="md">
+          {routing.loading ? (
+            <Group justify="center" py="md" role="status"><Loader size="sm" /><Text size="sm">{t('common.loading')}</Text></Group>
+          ) : routing.failed ? (
+            <Stack gap="xs" align="center" py="md">
+              <Text size="sm" c="dimmed" role="alert">{t('routing.loadError')}</Text>
+              <Button variant="light" size="xs" leftSection={<IconRefresh size={14} />} onClick={routing.reload}>{t('common.refresh')}</Button>
+            </Stack>
+          ) : routing.options?.supported ? (
+            <ServiceRoutingPanel key={service.user_service_id} userServiceId={service.user_service_id} serviceStatus={service.status} options={routing.options} onSaved={routing.update}
+              pollPaused={routing.pollPaused} />
+          ) : null}
+        </Tabs.Panel>}
       </Tabs>
 
-      {isNotPaid && (
+      {visibleTab !== 'routing' && isNotPaid && (
         <Paper withBorder p="md" radius="md" mt="md">
           <Stack gap="sm">
             {forecastLoading ? (
@@ -708,7 +728,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
         </Paper>
       )}
 
-      {canChange && (
+      {visibleTab !== 'routing' && canChange && (
         <Button
           color="blue"
           variant="light"
@@ -721,7 +741,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
         </Button>
       )}
 
-      {canStop && (
+      {visibleTab !== 'routing' && canStop && (
         <Button
           color="orange"
           variant="light"
@@ -734,7 +754,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
         </Button>
       )}
 
-      {canDelete && (
+      {visibleTab !== 'routing' && canDelete && (
         <Button
           color="red"
           variant="light"

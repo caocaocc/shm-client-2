@@ -132,6 +132,17 @@ export const systemApi = {
   getAuthConfig: () => api.get<{ data: SystemAuthConfig[] }>('/system/auth', { timeout: 10_000 }),
 };
 
+export const serviceOptionsApi = {
+  get: (userServiceId: number, signal?: AbortSignal) => api.get('/user/service/options', {
+    params: { user_service_id: userServiceId }, signal, timeout: 10_000,
+  }),
+  readSecret: (userServiceId: number, signal?: AbortSignal) => api.post('/user/service/options/secret', {
+    user_service_id: userServiceId,
+  }, { signal, timeout: 10_000 }),
+  save: (payload: { user_service_id: number; enabled: boolean; data?: unknown; secret?: unknown }) =>
+    api.post('/user/service/options', payload, { timeout: 10_000 }),
+};
+
 export const userApi = {
   getProfile: () => api.get('/user'),
   updateProfile: (data: Record<string, unknown>) => api.post('/user', data),
