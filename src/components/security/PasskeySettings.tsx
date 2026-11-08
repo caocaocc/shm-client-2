@@ -1,3 +1,4 @@
+import { formatDateTime } from '../../utils/display';
 import { useState, useEffect } from 'react';
 import { Card, Text, Stack, Group, Button, TextInput, ActionIcon, Loader, Box, Drawer, Modal } from '@mantine/core';
 import { IconFingerprint, IconTrash, IconEdit, IconPlus, IconDeviceMobile } from '@tabler/icons-react';
@@ -225,13 +226,7 @@ export default function PasskeySettings({ embedded = false, isActive = true }: P
     }
   };
 
-  const formatDate = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleDateString();
-    } catch {
-      return dateString;
-    }
-  };
+
 
   if (!isWebAuthnSupported) {
     const content = (
@@ -318,7 +313,7 @@ export default function PasskeySettings({ embedded = false, isActive = true }: P
                   <div>
                     <Text size="sm" fw={500}>{credential.name}</Text>
                     <Text size="xs" c="dimmed">
-                      {t('passkey.createdAt')}: {formatDate(credential.created_at)}
+                      {t('passkey.createdAt')}: {formatDateTime(credential.created_at)}
                     </Text>
                   </div>
                 </Group>

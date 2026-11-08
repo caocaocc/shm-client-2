@@ -119,6 +119,7 @@ export const auth = {
 };
 
 export interface SystemAuthConfig {
+  billing?: { currency: string };
   auth: { enabled: boolean };
   register: { enabled: boolean };
   captcha: { enabled: boolean };
@@ -128,7 +129,7 @@ export interface SystemAuthConfig {
 }
 
 export const systemApi = {
-  getAuthConfig: () => api.get<{ data: SystemAuthConfig[] }>('/system/auth'),
+  getAuthConfig: () => api.get<{ data: SystemAuthConfig[] }>('/system/auth', { timeout: 10_000 }),
 };
 
 export const userApi = {

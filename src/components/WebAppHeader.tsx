@@ -1,3 +1,4 @@
+import { formatMoney } from '../utils/display';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Group, ActionIcon, useMantineColorScheme, useComputedColorScheme, Tooltip, Indicator, Button } from '@mantine/core';
@@ -47,7 +48,7 @@ export function WebAppHeader() {
           size="xs"
           onClick={() => setPayModalOpen(true)}
         >
-          {user.balance} {t('common.currency')}
+          {formatMoney(user.balance)}
         </Button>
       )}
       {isSupported && (
@@ -72,7 +73,7 @@ export function WebAppHeader() {
               color={isSubscribed ? undefined : 'green'}
               size="lg"
               loading={pushLoading}
-              aria-label="Push notifications"
+              aria-label={t('common.pushNotifications')}
             >
               {isSubscribed ? <IconBellOff size={20} /> : <IconBell size={20} />}
             </ActionIcon>

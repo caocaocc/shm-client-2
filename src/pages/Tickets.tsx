@@ -1,3 +1,4 @@
+import { formatMoney, formatDateTime } from '../utils/display';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActionIcon,
@@ -132,12 +133,7 @@ function toBase64(file: File): Promise<string> {
   });
 }
 
-function formatDate(value?: string): string {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString();
-}
+
 
 function normalizeStatus(status?: string): string {
   return status && KNOWN_STATUSES.has(status) ? status : 'unknown';
@@ -573,7 +569,7 @@ export default function Tickets() {
                 {lastMessage.message}
               </Text>
             )}
-            <Text size="xs" c="dimmed">{getTicketIdText(ticket)} • {formatDate(ticket.updated || ticket.created)}</Text>
+            <Text size="xs" c="dimmed">{getTicketIdText(ticket)} • {formatDateTime(ticket.updated || ticket.created)}</Text>
           </Stack>
         </Card>
       </UnstyledButton>
@@ -638,7 +634,7 @@ export default function Tickets() {
                     >
                       <IconMessageCircle size={14} />
                     </ThemeIcon>
-                    <Text size="xs" c="dimmed">{formatDate(message.created)}</Text>
+                    <Text size="xs" c="dimmed">{formatDateTime(message.created)}</Text>
                   </Group>
 
                   <Text size="sm" style={{ whiteSpace: 'pre-wrap' }}>{message.message}</Text>
@@ -909,14 +905,14 @@ export default function Tickets() {
                   if (value && !newSubject.trim()) {
                     const pay = payments.find((p) => String(p.id) === value);
                     if (pay) {
-                      setNewSubject(`${t('tickets.ticketType.payment')} #${pay.id} — ${pay.money}₽${pay.date ? ` · ${formatDate(pay.date)}` : ''}`);
+                      setNewSubject(`${t('tickets.ticketType.payment')} #${pay.id} — ${formatMoney(pay.money)}${pay.date ? ` · ${formatDateTime(pay.date)}` : ''}`);
                     }
                   }
                 }}
                 clearable
                 data={payments.map((pay) => ({
                   value: String(pay.id),
-                  label: `#${pay.id} — ${pay.money}₽${pay.date ? ` · ${formatDate(pay.date)}` : ''}`,
+                  label: `#${pay.id} — ${formatMoney(pay.money)}${pay.date ? ` · ${formatDateTime(pay.date)}` : ''}`,
                 }))}
               />
             )

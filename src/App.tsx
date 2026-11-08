@@ -1,3 +1,4 @@
+import { formatMoney } from './utils/display';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import { useEffect, useState } from 'react';
@@ -9,7 +10,8 @@ import { IconLogout, IconHeadset, IconBell, IconBellOff, IconWallet } from '@tab
 import { useTranslation } from 'react-i18next';
 import { useStore } from './store/useStore';
 import { NAV_ITEMS } from './constants/navigation';
-import { auth } from './api/client';
+import { auth, systemApi } from './api/client';
+import { loadBillingCurrency } from './utils/billing';
 import { removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
 import { config } from './config';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -38,6 +40,8 @@ import Tickets from './pages/Tickets.tsx';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import AddToHomeScreen from './pages/AddToHomeScreen';
+
+const configuredCurrency = config.CURRENCY;
 
 function AppContent() {
   const location = useLocation();
@@ -126,6 +130,9 @@ function AppContent() {
     if (hasAddToHomeScreen) { setIsLoading(false); return; }
     let cancelled = false;
     const checkAuth = async () => {
+      const billingRequest = loadBillingCurrency(configuredCurrency, async () =>
+        (await systemApi.getAuthConfig()).data,
+      ).then(currency => { if (!cancelled) config.CURRENCY = currency; });
       try {
         const response = await auth.getCurrentUser();
         const responseData = response.data.data;
@@ -137,6 +144,7 @@ function AppContent() {
           removeCookie();
         }
       } finally {
+        await billingRequest;
         if (!cancelled) setIsLoading(false);
       }
     };
@@ -253,7 +261,7 @@ function AppContent() {
   );
 
   const versionModal = (
-    <Modal opened={versionOpen} onClose={() => setVersionOpen(false)} title="Version" size="xs" centered>
+    <Modal opened={versionOpen} onClose={() => setVersionOpen(false)} title={t('common.version')} size="xs" centered>
       <Text size="sm" ff="monospace" ta="center" py="xs">{typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '?'}</Text>
     </Modal>
   );
@@ -352,7 +360,7 @@ function AppContent() {
                   size="xs"
                   onClick={() => setPayModalOpen(true)}
                 >
-                  {user.balance} {t('common.currency')}
+                  {formatMoney(user.balance)}
                 </Button>
               )}
               {isSupported && (
@@ -377,7 +385,7 @@ function AppContent() {
                       color={isSubscribed ? undefined : 'green'}
                       size="lg"
                       loading={pushLoading}
-                      aria-label="Push notifications"
+                      aria-label={t('common.pushNotifications')}
                     >
                       {isSubscribed ? <IconBellOff size={16} /> : <IconBell size={16} />}
                     </ActionIcon>
@@ -392,7 +400,7 @@ function AppContent() {
               <LanguageSwitcher />
               <ThemeToggle />
               {!hasTelegramWebAppAutoAuth && (
-                <ActionIcon onClick={logout} variant="default" size="lg" aria-label="Logout">
+                <ActionIcon onClick={logout} variant="default" size="lg" aria-label={t('common.logout')}>
                   <IconLogout size={18} />
                 </ActionIcon>
               )}
