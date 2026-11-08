@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api/client'
 import { config } from '../config'
+import { useTranslation } from 'react-i18next'
 
 function urlBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
   const padding = '='.repeat((4 - (base64.length % 4)) % 4)
@@ -13,6 +14,7 @@ function urlBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
 }
 
 export function usePushNotifications() {
+  const { t, i18n } = useTranslation()
   const isEnabled = config.WEB_PUSH_ENABLE === 'true' && !!config.VAPID_PUBLIC_KEY
   const isSupported = isEnabled
     && typeof window !== 'undefined'
@@ -53,7 +55,7 @@ export function usePushNotifications() {
     try {
       const permission = await Notification.requestPermission()
       if (permission !== 'granted') {
-        setError('Разрешение на уведомления отклонено')
+        setError(t('profile.pushPermissionDenied'))
         return false
       }
       const reg = await navigator.serviceWorker.ready
@@ -69,12 +71,12 @@ export function usePushNotifications() {
         endpoint: subJson.endpoint,
         keys: subJson.keys,
         ua: navigator.userAgent.substring(0, 150),
-        lang: navigator.language || 'ru',
+        lang: i18n.language,
       })
       setIsSubscribed(true)
       return true
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка подписки')
+      setError(t('profile.pushSubscribeError'))
       return false
     } finally {
       setIsLoading(false)
@@ -96,7 +98,7 @@ export function usePushNotifications() {
       }
       return true
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Ошибка отписки')
+      setError(t('profile.pushUnsubscribeError'))
       return false
     } finally {
       setIsLoading(false)
