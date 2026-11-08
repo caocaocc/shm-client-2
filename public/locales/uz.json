@@ -510,5 +510,34 @@
     "code": "uz",
     "label": "Oʻzbekcha",
     "flag": "🇺🇿"
+  },
+  "subscription": {
+    "title": "Obunadan foydalanish",
+    "status": "Obuna holati",
+    "trafficUsed": "Ishlatilgan trafik",
+    "trafficLimit": "Trafik chegarasi",
+    "trafficRemaining": "Qolgan trafik",
+    "resetCycle": "Trafikni yangilash",
+    "expiresAt": "Obuna tugash vaqti",
+    "deviceLimit": "Qurilmalar chegarasi",
+    "devices": "{{count}} ta qurilma",
+    "unlimited": "Cheklanmagan",
+    "panelDefault": "Panelning standart qiymati",
+    "snapshotHint": "Xizmatning oxirgi sinxronlashidagi ma’lumotlar.",
+    "loadError": "Ulanish ma’lumotlarini yuklab bo‘lmadi. Qayta urinib ko‘ring.",
+    "notReady": "Ulanish ma’lumotlari hali tayyor emas. Keyinroq yangilang.",
+    "statusLabels": {
+      "ACTIVE": "Faol",
+      "DISABLED": "O‘chirilgan",
+      "LIMITED": "Trafik chegarasiga yetildi",
+      "EXPIRED": "Muddati tugagan"
+    },
+    "strategies": {
+      "NO_RESET": "Avtomatik yangilanmaydi",
+      "DAY": "Har kuni",
+      "WEEK": "Har hafta",
+      "MONTH": "Har oy",
+      "MONTH_ROLLING": "Har oy (yaratilgan sanada)"
+    }
   }
 }

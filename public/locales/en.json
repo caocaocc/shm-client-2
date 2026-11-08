@@ -535,5 +535,34 @@
     "bottomBar": "in the bottom bar",
     "choose": "Choose",
     "add": "Add to Home Screen"
+  },
+  "subscription": {
+    "title": "Subscription usage",
+    "status": "Subscription status",
+    "trafficUsed": "Traffic used",
+    "trafficLimit": "Traffic limit",
+    "trafficRemaining": "Traffic remaining",
+    "resetCycle": "Traffic reset",
+    "expiresAt": "Subscription expires",
+    "deviceLimit": "Device limit",
+    "devices": "{{count}} devices",
+    "unlimited": "Unlimited",
+    "panelDefault": "Panel default",
+    "snapshotHint": "Data from the most recent service sync.",
+    "loadError": "Unable to load connection details. Please retry.",
+    "notReady": "Connection details are not ready yet. Please refresh later.",
+    "statusLabels": {
+      "ACTIVE": "Active",
+      "DISABLED": "Disabled",
+      "LIMITED": "Traffic limit reached",
+      "EXPIRED": "Expired"
+    },
+    "strategies": {
+      "NO_RESET": "No automatic reset",
+      "DAY": "Daily",
+      "WEEK": "Weekly",
+      "MONTH": "Monthly",
+      "MONTH_ROLLING": "Monthly (creation-day anchor)"
+    }
   }
 }

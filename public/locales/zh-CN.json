@@ -535,5 +535,34 @@
     "code": "zh-CN",
     "label": "简体中文",
     "flag": "🇨🇳"
+  },
+  "subscription": {
+    "title": "订阅用量",
+    "status": "订阅状态",
+    "trafficUsed": "已用流量",
+    "trafficLimit": "流量限额",
+    "trafficRemaining": "剩余流量",
+    "resetCycle": "流量重置周期",
+    "expiresAt": "订阅到期时间",
+    "deviceLimit": "设备数量限制",
+    "devices": "{{count}} 台设备",
+    "unlimited": "不限制",
+    "panelDefault": "使用面板默认设置",
+    "snapshotHint": "数据来自最近一次服务同步。",
+    "loadError": "暂时无法读取连接配置，请重试。",
+    "notReady": "连接配置尚未就绪，请稍后刷新。",
+    "statusLabels": {
+      "ACTIVE": "已启用",
+      "DISABLED": "已停用",
+      "LIMITED": "流量已用尽",
+      "EXPIRED": "已过期"
+    },
+    "strategies": {
+      "NO_RESET": "不自动重置",
+      "DAY": "每天",
+      "WEEK": "每周",
+      "MONTH": "每月",
+      "MONTH_ROLLING": "滚动月（按创建日）"
+    }
   }
 }

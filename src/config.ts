@@ -121,7 +121,7 @@ function getConfig(): AppConfig {
     BITRIX_WIDGET_SCRIPT_URL: runtimeConfig?.BITRIX_WIDGET_SCRIPT_URL || import.meta.env.VITE_BITRIX_WIDGET_SCRIPT_URL || undefined,
     PROXY_CATEGORY: runtimeConfig?.PROXY_CATEGORY || import.meta.env.VITE_PROXY_CATEGORY || undefined,
     PROXY_CATEGORY_TITLE: runtimeConfig?.PROXY_CATEGORY_TITLE || import.meta.env.VITE_PROXY_CATEGORY_TITLE || undefined,
-    PROXY_STORAGE_PREFIX: runtimeConfig?.PROXY_STORAGE_PREFIX || import.meta.env.VITE_PROXY_STORAGE_PREFIX || undefined,
+    PROXY_STORAGE_PREFIX: runtimeConfig?.PROXY_STORAGE_PREFIX || import.meta.env.VITE_PROXY_STORAGE_PREFIX || 'vpn_remna_',
     SHOW_PROXY_SUB_LINK: runtimeConfig?.SHOW_PROXY_SUB_LINK || import.meta.env.VITE_SHOW_PROXY_SUB_LINK || 'true',
     SHOW_HAPP_CRYPTOLINK: runtimeConfig?.SHOW_HAPP_CRYPTOLINK || import.meta.env.VITE_SHOW_HAPP_CRYPTOLINK || 'false',
     SHOW_PROXY_QR: runtimeConfig?.SHOW_PROXY_QR || import.meta.env.VITE_SHOW_PROXY_QR || 'true',

@@ -520,5 +520,34 @@
     "code": "ar",
     "label": "العربية",
     "flag": "🇸🇦"
+  },
+  "subscription": {
+    "title": "استخدام الاشتراك",
+    "status": "حالة الاشتراك",
+    "trafficUsed": "البيانات المستخدمة",
+    "trafficLimit": "حد البيانات",
+    "trafficRemaining": "البيانات المتبقية",
+    "resetCycle": "إعادة تعيين البيانات",
+    "expiresAt": "انتهاء الاشتراك",
+    "deviceLimit": "حد الأجهزة",
+    "devices": "{{count}} أجهزة",
+    "unlimited": "غير محدود",
+    "panelDefault": "الإعداد الافتراضي للوحة",
+    "snapshotHint": "بيانات آخر مزامنة للخدمة.",
+    "loadError": "تعذر تحميل بيانات الاتصال. يرجى المحاولة مجددًا.",
+    "notReady": "بيانات الاتصال غير جاهزة بعد. يرجى التحديث لاحقًا.",
+    "statusLabels": {
+      "ACTIVE": "نشط",
+      "DISABLED": "معطل",
+      "LIMITED": "تم بلوغ حد البيانات",
+      "EXPIRED": "منتهي الصلاحية"
+    },
+    "strategies": {
+      "NO_RESET": "بدون إعادة تعيين تلقائية",
+      "DAY": "يوميًا",
+      "WEEK": "أسبوعيًا",
+      "MONTH": "شهريًا",
+      "MONTH_ROLLING": "شهريًا (في يوم الإنشاء)"
+    }
   }
 }

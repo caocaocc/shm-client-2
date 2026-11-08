@@ -512,5 +512,34 @@
     "code": "de",
     "label": "Deutsch",
     "flag": "🇩🇪"
+  },
+  "subscription": {
+    "title": "Abonnementnutzung",
+    "status": "Abonnementstatus",
+    "trafficUsed": "Verbrauchtes Datenvolumen",
+    "trafficLimit": "Datenvolumenlimit",
+    "trafficRemaining": "Verbleibendes Datenvolumen",
+    "resetCycle": "Zurücksetzen des Datenvolumens",
+    "expiresAt": "Abonnement läuft ab",
+    "deviceLimit": "Gerätelimit",
+    "devices": "{{count}} Geräte",
+    "unlimited": "Unbegrenzt",
+    "panelDefault": "Standard der Verwaltungsoberfläche",
+    "snapshotHint": "Daten aus der letzten Synchronisierung des Dienstes.",
+    "loadError": "Verbindungsdaten konnten nicht geladen werden. Bitte erneut versuchen.",
+    "notReady": "Die Verbindungsdaten sind noch nicht verfügbar. Bitte später aktualisieren.",
+    "statusLabels": {
+      "ACTIVE": "Aktiv",
+      "DISABLED": "Deaktiviert",
+      "LIMITED": "Datenvolumenlimit erreicht",
+      "EXPIRED": "Abgelaufen"
+    },
+    "strategies": {
+      "NO_RESET": "Kein automatisches Zurücksetzen",
+      "DAY": "Täglich",
+      "WEEK": "Wöchentlich",
+      "MONTH": "Monatlich",
+      "MONTH_ROLLING": "Monatlich (am Erstellungstag)"
+    }
   }
 }

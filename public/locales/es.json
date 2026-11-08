@@ -512,5 +512,34 @@
     "code": "es",
     "label": "Español",
     "flag": "🇪🇸"
+  },
+  "subscription": {
+    "title": "Uso de la suscripción",
+    "status": "Estado de la suscripción",
+    "trafficUsed": "Tráfico utilizado",
+    "trafficLimit": "Límite de tráfico",
+    "trafficRemaining": "Tráfico restante",
+    "resetCycle": "Reinicio del tráfico",
+    "expiresAt": "Vencimiento de la suscripción",
+    "deviceLimit": "Límite de dispositivos",
+    "devices": "{{count}} dispositivos",
+    "unlimited": "Sin límite",
+    "panelDefault": "Valor predeterminado del panel",
+    "snapshotHint": "Datos de la última sincronización del servicio.",
+    "loadError": "No se pudieron cargar los datos de conexión. Inténtalo de nuevo.",
+    "notReady": "Los datos de conexión aún no están disponibles. Actualiza más tarde.",
+    "statusLabels": {
+      "ACTIVE": "Activa",
+      "DISABLED": "Desactivada",
+      "LIMITED": "Límite de tráfico alcanzado",
+      "EXPIRED": "Vencida"
+    },
+    "strategies": {
+      "NO_RESET": "Sin reinicio automático",
+      "DAY": "Diario",
+      "WEEK": "Semanal",
+      "MONTH": "Mensual",
+      "MONTH_ROLLING": "Mensual (en el día de creación)"
+    }
   }
 }

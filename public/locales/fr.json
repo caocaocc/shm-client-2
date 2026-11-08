@@ -512,5 +512,34 @@
     "code": "fr",
     "label": "Français",
     "flag": "🇫🇷"
+  },
+  "subscription": {
+    "title": "Utilisation de l’abonnement",
+    "status": "État de l’abonnement",
+    "trafficUsed": "Trafic utilisé",
+    "trafficLimit": "Limite de trafic",
+    "trafficRemaining": "Trafic restant",
+    "resetCycle": "Réinitialisation du trafic",
+    "expiresAt": "Expiration de l’abonnement",
+    "deviceLimit": "Limite d’appareils",
+    "devices": "{{count}} appareils",
+    "unlimited": "Illimité",
+    "panelDefault": "Valeur par défaut du panneau",
+    "snapshotHint": "Données de la dernière synchronisation du service.",
+    "loadError": "Impossible de charger les paramètres de connexion. Veuillez réessayer.",
+    "notReady": "Les paramètres de connexion ne sont pas encore disponibles. Actualisez plus tard.",
+    "statusLabels": {
+      "ACTIVE": "Actif",
+      "DISABLED": "Désactivé",
+      "LIMITED": "Limite de trafic atteinte",
+      "EXPIRED": "Expiré"
+    },
+    "strategies": {
+      "NO_RESET": "Aucune réinitialisation automatique",
+      "DAY": "Quotidienne",
+      "WEEK": "Hebdomadaire",
+      "MONTH": "Mensuelle",
+      "MONTH_ROLLING": "Mensuelle (le jour de création)"
+    }
   }
 }
