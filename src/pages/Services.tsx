@@ -1,11 +1,13 @@
+import PaymentForm from '../components/PaymentForm';
+import { requiredTopUp } from '../utils/format';
 import { useServiceConnection } from '../hooks/useServiceConnection';
 import { ServiceRouting } from '../components/ServiceRouting';
 import { SubscriptionUsage } from '../components/SubscriptionUsage';
 import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Timeline, Text, Stack, Group, Badge, Button, Divider, Modal, ActionIcon, Loader, Center, Paper, Title, Tabs, Code, Tooltip, Accordion, Box, Select, NumberInput, Pagination, TextInput } from '@mantine/core';
-import { IconQrcode, IconCopy, IconCheck, IconDownload, IconRefresh, IconTrash, IconPlus, IconPlayerStop, IconExchange, IconCreditCard, IconWallet, IconDeviceMobileCog, IconPencil, IconX } from '@tabler/icons-react';
+import { Card, Timeline, Text, Stack, Group, Badge, Button, Divider, Modal, ActionIcon, Loader, Center, Paper, Title, Tabs, Code, Tooltip, Accordion, Box, Pagination, TextInput } from '@mantine/core';
+import { IconQrcode, IconCopy, IconCheck, IconDownload, IconRefresh, IconTrash, IconPlus, IconPlayerStop, IconExchange, IconWallet, IconDeviceMobileCog, IconPencil, IconX } from '@tabler/icons-react';
 import { useDisclosure, useClipboard } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
 import { api, servicesApi, userApi } from '../api/client';
@@ -25,14 +27,6 @@ interface ForecastItem {
   total: number;
   status: string;
   user_service_id: string;
-}
-
-interface PaySystem {
-  name: string;
-  shm_url: string;
-  internal?: number;
-  recurring?: number;
-  weight?: number;
 }
 
 interface ServiceInfo {
@@ -115,16 +109,11 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
   const [descriptionInput, setDescriptionInput] = useState(service.description || '');
   const [savingDescription, setSavingDescription] = useState(false);
   const { t } = useTranslation();
-  const { money, date, amountProps } = useDisplay();
+  const { money, date } = useDisplay();
   const clipboard = useClipboard({ timeout: 1000 });
 
   const [forecastTotal, setForecastTotal] = useState<number | null>(null);
   const [forecastLoading, setForecastLoading] = useState(false);
-  const [paySystems, setPaySystems] = useState<PaySystem[]>([]);
-  const [selectedPaySystem, setSelectedPaySystem] = useState<string | null>(null);
-  const [payAmount, setPayAmount] = useState<number | string>(0);
-  const [paySystemsLoading, setPaySystemsLoading] = useState(false);
-  const [paying, setPaying] = useState(false);
 
   const downloadConfig = async () => {
     if (!storageData) return;
@@ -183,12 +172,10 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
             (it: ForecastItem) => String(it.user_service_id) === String(service.user_service_id)
           );
           if (item) {
-            const needToPay = Math.max(0, Math.ceil((item.total - balance) * 100) / 100);
+            const needToPay = requiredTopUp(item.total, balance);
             setForecastTotal(needToPay);
-            setPayAmount(needToPay);
           } else if (forecast.total > 0) {
             setForecastTotal(forecast.total);
-            setPayAmount(Math.max(0, Math.ceil(forecast.total * 100) / 100));
           }
         }
       } catch {
@@ -198,56 +185,6 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
     };
     fetchForecast();
   }, [service.user_service_id, isNotPaid]);
-
-  const loadPaySystems = async () => {
-    if (paySystems.length > 0) return;
-    setPaySystemsLoading(true);
-    try {
-      const response = await userApi.getPaySystems();
-      const data: PaySystem[] = response.data.data || [];
-      const sorted = data.sort((a, b) => (b.weight || 0) - (a.weight || 0));
-      setPaySystems(sorted);
-      if (sorted.length > 0) {
-        setSelectedPaySystem(sorted[0].shm_url);
-      }
-    } catch {
-    } finally {
-      setPaySystemsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isNotPaid && forecastTotal !== null && forecastTotal > 0) {
-      loadPaySystems();
-    }
-  }, [isNotPaid, forecastTotal]);
-
-  const handlePay = async () => {
-    const paySystem = paySystems.find(ps => ps.shm_url === selectedPaySystem);
-    if (!paySystem) return;
-    setPaying(true);
-    try {
-      if (paySystem.internal || paySystem.recurring) {
-        const response = await fetch(paySystem.shm_url + payAmount, {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (response.status === 200 || response.status === 204) {
-          notifications.show({ title: t('common.success'), message: t('payments.paymentSuccess'), color: 'green' });
-          onDelete?.();
-        } else {
-          const data = await response.json().catch(() => ({}));
-          notifications.show({ title: t('common.error'), message: data.msg_ru || data.msg || t('payments.paymentError'), color: 'red' });
-        }
-      } else {
-        window.open(paySystem.shm_url + payAmount, '_blank');
-      }
-    } catch {
-      notifications.show({ title: t('common.error'), message: t('payments.paymentError'), color: 'red' });
-    } finally {
-      setPaying(false);
-    }
-  };
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -654,40 +591,8 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                   </Group>
                   <Text fw={700} size="lg" c="red">{money(forecastTotal)}</Text>
                 </Group>
-                {paySystemsLoading ? (
-                  <Group justify="center" py="xs">
-                    <Loader size="sm" />
-                  </Group>
-                ) : paySystems.length > 0 ? (
-                  <>
-                    <Select
-                      label={t('payments.paymentSystem')}
-                      data={paySystems.map(ps => ({ value: ps.shm_url, label: ps.name }))}
-                      value={selectedPaySystem}
-                      onChange={setSelectedPaySystem}
-                      size="sm"
-                    />
-                    <NumberInput
-                      label={t('payments.amount')}
-                      value={payAmount}
-                      onChange={setPayAmount}
-                      min={1}
-                      step={10}
-                      decimalScale={2}
-                      {...amountProps}
-                      size="sm"
-                    />
-                    <Button
-                      fullWidth
-                      leftSection={<IconCreditCard size={18} />}
-                      onClick={handlePay}
-                      loading={paying}
-                      disabled={!selectedPaySystem}
-                    >
-                      {t('services.payService', { amount: money(payAmount) })}
-                    </Button>
-                  </>
-                ) : null}
+                <PaymentForm initialAmount={forecastTotal} minimum={forecastTotal} label="services.payService"
+                  onComplete={paid => { if (paid) onDelete?.(); }} />
               </>
             ) : null}
           </Stack>

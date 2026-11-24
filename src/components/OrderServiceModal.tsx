@@ -1,9 +1,10 @@
-import { parsePeriod } from '../utils/format';
+import PaymentForm from './PaymentForm';
+import { parsePeriod, requiredTopUp } from '../utils/format';
 import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Stack, Text, Card, Group, Badge, Loader, Center, Button, Paper, Divider, Select, NumberInput, Alert, Checkbox, ScrollArea } from '@mantine/core';
-import { IconArrowLeft, IconCreditCard, IconCheck, IconWallet } from '@tabler/icons-react';
+import { Modal, Stack, Text, Card, Group, Badge, Loader, Center, Button, Paper, Divider, Alert, Checkbox, ScrollArea } from '@mantine/core';
+import { IconArrowLeft, IconCheck, IconWallet } from '@tabler/icons-react';
 import { servicesApi, userApi } from '../api/client';
 import { notifications } from '@mantine/notifications';
 import { config } from '../config';
@@ -21,11 +22,6 @@ interface OrderService {
   discount: number;
   period: number;
   descr: string;
-}
-
-interface PaySystem {
-  name: string;
-  shm_url: string;
 }
 
 interface OrderServiceModalProps {
@@ -88,31 +84,26 @@ export default function OrderServiceModal({
   onChangeSuccess,
 }: OrderServiceModalProps) {
   const { t } = useTranslation();
-  const { money, amountProps } = useDisplay();
+  const { money } = useDisplay();
   const [services, setServices] = useState<OrderService[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState<OrderService | null>(null);
   const [ordering, setOrdering] = useState(false);
-  const [userBalance, setUserBalance] = useState<number>(0);
-  const [userBonus, setUserBonus] = useState<number>(0);
-  const [paySystems, setPaySystems] = useState<PaySystem[]>([]);
-  const [selectedPaySystem, setSelectedPaySystem] = useState<string | null>(null);
-  const [payAmount, setPayAmount] = useState<number | string>(0);
-  const [paySystemsLoading, setPaySystemsLoading] = useState(false);
-  const [paySystemsLoaded, setPaySystemsLoaded] = useState(false);
+  const [userBalance, setUserBalance] = useState<number | null>(null);
+  const [balanceFailed, setBalanceFailed] = useState(false);
   const [finishAfterActive, setFinishAfterActive] = useState(false);
 
   const isChangeMode = mode === 'change';
   const canDeferChange = isChangeMode && currentService?.status === 'ACTIVE';
 
   const getEffectiveCost = (service: OrderService): number => {
-    if (config.ORDER_COST_WITH_BONUSES === 'true') return Number(service.real_cost_with_bonuses || 0);
-    if (config.ORDER_COST_DISCOUNT === 'true') return Number(service.real_cost || 0);
+    if (config.ORDER_COST_WITH_BONUSES === 'true') return Number(service.real_cost_with_bonuses ?? service.real_cost ?? service.cost);
+    if (config.ORDER_COST_DISCOUNT === 'true') return Number(service.real_cost ?? service.cost);
     return Number(service.cost || 0);
   };
 
   const getTopUpAmount = (service: OrderService, balance: number): number => {
-    return Math.max(0, Math.ceil((getEffectiveCost(service) - balance) * 100) / 100);
+    return requiredTopUp(getEffectiveCost(service), balance);
   };
 
   useEffect(() => {
@@ -131,16 +122,6 @@ export default function OrderServiceModal({
     }
   }, [opened, isChangeMode, currentService?.category]);
 
-  useEffect(() => {
-    if (selectedService && !isChangeMode) {
-      const cost = getEffectiveCost(selectedService);
-      const needToPay = getTopUpAmount(selectedService, userBalance);
-      setPayAmount(needToPay);
-      if (userBalance < cost && !paySystemsLoaded) {
-        loadPaySystems();
-      }
-    }
-  }, [selectedService, userBalance, userBonus, isChangeMode]);
 
   useEffect(() => {
     if (isChangeMode) {
@@ -149,13 +130,14 @@ export default function OrderServiceModal({
   }, [selectedService, isChangeMode]);
 
   const fetchUserBalance = async () => {
+    setUserBalance(null);
+    setBalanceFailed(false);
     try {
       const response = await userApi.getProfile();
       const userData = response.data.data?.[0] || response.data.data;
-      setUserBalance(userData?.balance || 0);
-      setUserBonus(userData?.bonus || 0);
-    } catch {
-    }
+      if (userData?.balance == null || !Number.isFinite(Number(userData.balance))) throw new Error();
+      setUserBalance(Number(userData.balance));
+    } catch { setBalanceFailed(true); }
   };
 
   const fetchServices = async () => {
@@ -197,28 +179,6 @@ export default function OrderServiceModal({
     }
   };
 
-  const loadPaySystems = async () => {
-    if (paySystemsLoaded) return;
-    setPaySystemsLoading(true);
-    try {
-      const response = await userApi.getPaySystems();
-      const data = response.data.data || [];
-      setPaySystems(data);
-      if (data.length > 0) {
-        setSelectedPaySystem(data[0].name);
-      }
-      setPaySystemsLoaded(true);
-    } catch {
-      notifications.show({
-        title: t('common.error'),
-        message: t('payments.paymentSystemsError'),
-        color: 'red',
-      });
-    } finally {
-      setPaySystemsLoading(false);
-    }
-  };
-
   const handleOrder = async () => {
     if (!selectedService) return;
 
@@ -235,47 +195,6 @@ export default function OrderServiceModal({
       onOrderSuccess?.();
       handleClose();
     } catch (error) {
-      notifications.show({
-        title: t('common.error'),
-        message: t('order.orderError'),
-        color: 'red',
-      });
-    } finally {
-      setOrdering(false);
-    }
-  };
-
-  const handleOrderAndPay = async () => {
-    if (!selectedService) return;
-
-    const paySystem = paySystems.find(ps => ps.name === selectedPaySystem);
-    if (!paySystem) {
-      notifications.show({
-        title: t('common.error'),
-        message: t('payments.selectPaymentSystem'),
-        color: 'red',
-      });
-      return;
-    }
-
-    setOrdering(true);
-    const payWindow = window.open('', '_blank');
-    try {
-      await servicesApi.order(selectedService.service_id);
-      if (payWindow) {
-        payWindow.location.href = paySystem.shm_url + payAmount;
-      }
-
-      notifications.show({
-        title: t('common.success'),
-        message: t('order.orderPaySuccess', { name: selectedService.name }),
-        color: 'green',
-      });
-
-      onOrderSuccess?.();
-      handleClose();
-    } catch (error) {
-      if (payWindow) payWindow.close();
       notifications.show({
         title: t('common.error'),
         message: t('order.orderError'),
@@ -455,6 +374,8 @@ export default function OrderServiceModal({
                 {t('services.changeService')}
               </Button>
             </Stack>
+          ) : userBalance === null ? (
+            balanceFailed ? <Button variant="light" onClick={fetchUserBalance}>{t('common.refresh')}</Button> : <Loader size="sm" />
           ) : (
             <>
               <Alert
@@ -484,54 +405,18 @@ export default function OrderServiceModal({
                   {t('order.orderFor', { amount: money(getEffectiveCost(selectedService)) })}
                 </Button>
               ) : (
-                <>
-                  <Paper withBorder p="md" radius="md">
-                    <Stack gap="md">
-                      <Text fw={500}>{t('order.topUpBalance')}</Text>
-
-                      {paySystemsLoading ? (
-                        <Group justify="center" py="md">
-                          <Loader size="sm" />
-                          <Text size="sm">{t('payments.loadingPaymentSystems')}</Text>
-                        </Group>
-                      ) : paySystems.length === 0 ? (
-                        <Text c="dimmed" size="sm">{t('payments.noPaymentSystems')}</Text>
-                      ) : (
-                        <>
-                          <Select
-                            label={t('payments.paymentSystem')}
-                            placeholder={t('payments.selectPaymentSystem')}
-                            data={paySystems.map(ps => ({ value: ps.name, label: ps.name }))}
-                            value={selectedPaySystem}
-                            onChange={setSelectedPaySystem}
-                          />
-                          <NumberInput
-                            label={t('payments.amount')}
-                            placeholder={t('payments.enterAmount')}
-                            value={payAmount}
-                            onChange={setPayAmount}
-                            min={getTopUpAmount(selectedService, userBalance)}
-                            step={10}
-                            decimalScale={2}
-                            {...amountProps}
-                            description={`${t('order.minimum')}: ${money(getTopUpAmount(selectedService, userBalance))} (${t('order.missingAmount')})`}
-                          />
-                        </>
-                      )}
-                    </Stack>
-                  </Paper>
-
-                  <Button
-                    fullWidth
-                    size="md"
-                    leftSection={<IconCreditCard size={18} />}
-                    onClick={handleOrderAndPay}
-                    loading={ordering}
-                    disabled={!selectedPaySystem || paySystemsLoading}
-                  >
-                    {t('order.orderAndPay', { amount: money(payAmount) })}
-                  </Button>
-                </>
+                <Paper withBorder p="md" radius="md">
+                  <Text mb="sm" fw={500}>{t('order.topUpBalance')}</Text>
+                  {opened && <PaymentForm key={selectedService.service_id}
+                    initialAmount={getTopUpAmount(selectedService, userBalance)} minimum={getTopUpAmount(selectedService, userBalance)}
+                    label="order.orderAndPay" beforeCharge={async () => {
+                      await servicesApi.order(selectedService.service_id);
+                      onOrderSuccess?.();
+                    }} onComplete={() => {
+                      notifications.show({ message: t('order.orderPaySuccess', { name: selectedService.name }), color: 'green' });
+                      handleClose();
+                    }} />}
+                </Paper>
               )}
             </>
           )}
