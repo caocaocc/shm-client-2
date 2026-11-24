@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { Box, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, useMantineColorScheme, useComputedColorScheme, Checkbox, Tooltip } from '@mantine/core';
+import { Box, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, Checkbox, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useForm, isEmail, hasLength } from '@mantine/form';
-import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, IconBrandTelegram, IconBrandGoogle, IconBrandYandex, IconBrandGithub, IconMailForward, IconLock, IconMoon, IconSun } from '@tabler/icons-react';
+import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, IconBrandTelegram, IconBrandGoogle, IconBrandYandex, IconBrandGithub, IconMailForward, IconLock } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
 import { auth, passkeyApi, userApi, oauth2Api, systemApi, SystemAuthConfig } from '../api/client';
@@ -10,6 +10,7 @@ import { setCookie, getResetTokenCookie, removeResetTokenCookie, getResetLoginCo
 import { useStore } from '../store/useStore';
 import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
+import { ThemeToggle } from '../components/ThemeToggle';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import DocumentModal from '../components/DocumentModal';
 import { hasTelegramWebAppAutoAuth, hasTelegramWebAppAuth, isTelegramWebApp } from '../constants/webapp';
@@ -41,21 +42,6 @@ function arrayBufferToBase64Url(buffer: ArrayBuffer): string {
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-function ThemeToggle() {
-  const { setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme('light');
-
-  return (
-    <ActionIcon
-      onClick={() => setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')}
-      variant="default"
-      size="lg"
-      aria-label="Toggle color scheme"
-    >
-      {computedColorScheme === 'light' ? <IconMoon size={18} /> : <IconSun size={18} />}
-    </ActionIcon>
-  );
-}
 
 export default function Login() {
   const [mode, setMode] = useState<'login' | 'register'>('login');

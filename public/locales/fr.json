@@ -12,6 +12,8 @@
     "delete": "Supprimer",
     "edit": "Modifier",
     "confirm": "Confirmer",
+    "logout": "Se déconnecter",
+    "confirmation": "Confirmation",
     "back": "Retour",
     "next": "Suivant",
     "close": "Fermer",
@@ -24,7 +26,6 @@
     "copy": "Copier",
     "copied": "Copié !",
     "or": "ou",
-    "currency": "₽",
     "months": "mois.",
     "days": "j.",
     "hours": "h.",
@@ -43,7 +44,13 @@
     "publicOffer": "Offre publique",
     "userAgreement": "Accord utilisateur",
     "contacts": "Contacts",
-    "document": "Document"
+    "document": "Document",
+    "changeLanguage": "Changer de langue",
+    "currentLanguage": "Langue actuelle : {{language}}",
+    "noData": "Aucune donnée",
+    "pushNotifications": "Notifications push",
+    "toggleTheme": "Changer de thème",
+    "version": "Version"
   },
   "auth": {
     "login": "Se connecter",
@@ -226,7 +233,36 @@
     "oauth2Unbind": "Compte délié avec succès",
     "oauth2UnbindError": "Impossible de délier le compte",
     "oauth2WaitTitle": "En attente de confirmation",
-    "oauth2WaitDescription": "Une fois confirmé, vous serez automatiquement redirigé."
+    "oauth2WaitDescription": "Une fois confirmé, vous serez automatiquement redirigé.",
+    "pushPermissionDenied": "Les notifications ne sont pas autorisées",
+    "pushSubscribeError": "Impossible d’activer les notifications",
+    "pushUnsubscribeError": "Impossible de désactiver les notifications",
+    "telegramUnlinkError": "Impossible de dissocier Telegram",
+    "telegramUnlinked": "Compte Telegram dissocié"
+  },
+  "routing": {
+    "outbound": "Sortie",
+    "rules": "Règles",
+    "help": "Une règle par ligne. Le trafic restant suit les routes de la plateforme.",
+    "example": "socks5://utilisateur:motdepasse@serveur:port\nLien de partage SS\nConfiguration WireGuard complète",
+    "unconfigured": "Non configuré",
+    "queued": "En attente",
+    "submitted": "Transmis",
+    "disabled": "Désactivation transmise",
+    "pending_disable": "Désactivation en attente",
+    "estimated": "Envoi prévu",
+    "waiting": "En attente du service",
+    "error": "Échec de la synchronisation",
+    "enable": "Activer",
+    "disable": "Désactiver",
+    "unavailable": "Le routage est indisponible pour ce service.",
+    "badOutbound": "Vérifiez l’adresse, le protocole et les identifiants de sortie.",
+    "badRules": "Saisissez un domaine, une IP, un CIDR, geosite ou geoip par ligne.",
+    "denied": "La sortie doit utiliser une adresse publique autorisée.",
+    "retry": "Impossible de charger ou d’enregistrer la configuration. Réessayez.",
+    "panel": "Vérifiez de nouveau le statut ou contactez l’assistance.",
+    "targetChanged": "Votre service a changé de serveur. Une fois les anciennes règles retirées, cliquez sur « Enregistrer » pour utiliser cette sortie et ces règles sur le nouveau serveur.",
+    "unconfirmed": "L’envoi n’a pas été confirmé. Votre saisie reste dans le formulaire pendant la vérification de l’état."
   },
   "services": {
     "title": "Mes services",
@@ -235,6 +271,8 @@
     "serviceDetails": "Détails du service",
     "info": "Informations",
     "connection": "Connexion",
+    "routing": "Routage",
+    "routingLoadError": "Impossible de charger le routage. Actualisez pour réessayer.",
     "status": "Statut",
     "cost": "Coût",
     "description": "Note",
@@ -276,10 +314,10 @@
     "serviceStopped": "Service arrêté",
     "serviceStopError": "Échec de l'arrêt du service",
     "amountToPay": "À payer",
-    "payService": "Payer {{amount}} ₽",
-    "savings": "Vous économisez {{amount}} ₽ avec la remise",
-    "savings_bonus": "Nous créditerons {{amount}} ₽ en bonus",
-    "profit": "Votre bénéfice est de {{amount}} ₽ en tenant compte de la remise et des bonus",
+    "payService": "Payer {{amount}}",
+    "savings": "Vous économisez {{amount}} avec la remise",
+    "savings_bonus": "Nous créditerons {{amount}} en bonus",
+    "profit": "Votre bénéfice est de {{amount}} en tenant compte de la remise et des bonus",
     "emailNotVerifiedtitle": "E-mail non vérifié",
     "emailNotVerifiedDesc": "Pour commander des services, vous devez vérifier votre adresse e-mail. Veuillez vérifier votre e-mail pour continuer.",
     "emailNotVerifiedAction": "Vérifier l'e-mail"
@@ -327,7 +365,8 @@
     "autopaymentDeleteError": "Échec de la suppression du paiement automatique",
     "paymentSuccess": "Paiement effectué avec succès",
     "internalPaymentSuccess": "Demande de paiement effectuée",
-    "paymentError": "Échec du paiement"
+    "paymentError": "Échec du paiement",
+    "invalidAmount": "Saisissez un montant valide avec deux décimales au maximum."
   },
   "order": {
     "title": "Commander un service",
@@ -337,12 +376,12 @@
     "period": "Période",
     "yourBalance": "Votre solde",
     "enoughToPay": "Solde suffisant",
-    "needTopUp": "Vous devez recharger de {{amount}} ₽",
-    "orderFor": "Commander pour {{amount}} ₽",
+    "needTopUp": "Vous devez recharger de {{amount}}",
+    "orderFor": "Commander pour {{amount}}",
     "topUpBalance": "Recharger le solde",
     "minimum": "Minimum",
     "missingAmount": "montant manquant",
-    "orderAndPay": "Commander et payer {{amount}} ₽",
+    "orderAndPay": "Commander et payer {{amount}}",
     "noServicesAvailable": "Aucun service disponible à la commande",
     "loadError": "Échec du chargement de la liste des services",
     "orderSuccess": "Service \"{{name}}\" commandé et payé depuis le solde",
@@ -361,11 +400,14 @@
     "enterCode": "Entrez le code promo",
     "applied": "Code promo appliqué",
     "applyError": "Échec de l'application du code promo",
-    "success": "Code promo \"{{code}}\" appliqué ! {{amount}} ₽ crédités",
+    "success": "Code promo \"{{code}}\" appliqué ! {{amount}} crédités",
     "error": "Code promo invalide ou déjà utilisé"
   },
   "withdrawals": {
     "title": "Retraits",
+    "usage": "Volume facturable",
+    "usageOpen": "En attente / {{limit}}",
+    "usageUnknown": "Indisponible / {{limit}}",
     "historyEmpty": "L'historique des retraits est vide",
     "withdrawDate": "Date de retrait",
     "endDate": "Date de fin",
@@ -510,5 +552,42 @@
     "code": "fr",
     "label": "Français",
     "flag": "🇫🇷"
+  },
+  "subscription": {
+    "title": "Utilisation de l’abonnement",
+    "status": "État de l’abonnement",
+    "trafficUsed": "Trafic utilisé",
+    "trafficLimit": "Limite de trafic",
+    "trafficRemaining": "Trafic restant",
+    "resetCycle": "Réinitialisation du trafic",
+    "expiresAt": "Expiration de l’abonnement",
+    "deviceLimit": "Limite d’appareils",
+    "devices": "{{count}} appareils",
+    "unlimited": "Illimité",
+    "panelDefault": "Valeur par défaut du panneau",
+    "snapshotHint": "Données de la dernière synchronisation du service.",
+    "loadError": "Impossible de charger les paramètres de connexion. Veuillez réessayer.",
+    "notReady": "Les paramètres de connexion ne sont pas encore disponibles. Actualisez plus tard.",
+    "statusLabels": {
+      "ACTIVE": "Actif",
+      "DISABLED": "Désactivé",
+      "LIMITED": "Limite de trafic atteinte",
+      "EXPIRED": "Expiré"
+    },
+    "strategies": {
+      "NO_RESET": "Aucune réinitialisation automatique",
+      "DAY": "Quotidienne",
+      "WEEK": "Hebdomadaire",
+      "MONTH": "Mensuelle",
+      "MONTH_ROLLING": "Mensuelle (le jour de création)"
+    }
+  },
+  "homeScreen": {
+    "title": "Ajoutez {{appName}} à votre écran d’accueil",
+    "tap": "Touchez",
+    "toolbar": "dans la barre d’outils",
+    "bottomBar": "dans la barre du bas",
+    "choose": "Choisissez",
+    "add": "Sur l’écran d’accueil"
   }
 }

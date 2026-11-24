@@ -253,7 +253,7 @@ function AppContent() {
   );
 
   const versionModal = (
-    <Modal opened={versionOpen} onClose={() => setVersionOpen(false)} title="Version" size="xs" centered>
+    <Modal opened={versionOpen} onClose={() => setVersionOpen(false)} title={t('common.version')} size="xs" centered>
       <Text size="sm" ff="monospace" ta="center" py="xs">{typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '?'}</Text>
     </Modal>
   );
@@ -377,7 +377,7 @@ function AppContent() {
                       color={isSubscribed ? undefined : 'green'}
                       size="lg"
                       loading={pushLoading}
-                      aria-label="Push notifications"
+                      aria-label={t('common.pushNotifications')}
                     >
                       {isSubscribed ? <IconBellOff size={16} /> : <IconBell size={16} />}
                     </ActionIcon>
@@ -392,7 +392,7 @@ function AppContent() {
               <LanguageSwitcher />
               <ThemeToggle />
               {!hasTelegramWebAppAutoAuth && (
-                <ActionIcon onClick={logout} variant="default" size="lg" aria-label="Logout">
+                <ActionIcon onClick={logout} variant="default" size="lg" aria-label={t('common.logout')}>
                   <IconLogout size={18} />
                 </ActionIcon>
               )}
@@ -433,6 +433,8 @@ function App() {
       return () => { script.remove(); };
     }
   }, []);
+
+  useEffect(() => { document.documentElement.lang = i18n.language; }, [i18n.language]);
 
   const isRtl = i18n.language === 'ar';
 

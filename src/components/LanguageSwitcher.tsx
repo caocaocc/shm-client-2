@@ -15,7 +15,7 @@ function countLeafKeys(obj: unknown): number {
 }
 
 export default function LanguageSwitcher() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { toggleDirection, dir } = useDirection();
 
   if (config.SINGLE_LANGUAGE === 'true') return null;
@@ -50,7 +50,8 @@ export default function LanguageSwitcher() {
   const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
 
   const handleChange = (code: string) => {
-    i18n.changeLanguage(code);
+    void i18n.changeLanguage(code);
+    try { localStorage.setItem('shm_language', code); } catch { /* Use the selection for this visit. */ }
     const shouldBeRtl = RTL_LANGUAGES.includes(code);
     if (shouldBeRtl && dir === 'ltr') toggleDirection();
     if (!shouldBeRtl && dir === 'rtl') toggleDirection();
@@ -59,7 +60,7 @@ export default function LanguageSwitcher() {
   return (
     <Menu shadow="md" width={150}>
       <Menu.Target>
-        <ActionIcon variant="default" size="lg" aria-label="Change language" title={`Current language: ${currentLang?.label}`}>
+        <ActionIcon variant="default" size="lg" aria-label={t('common.changeLanguage')} title={t('common.currentLanguage', { language: currentLang?.label })}>
           <IconLanguage size={18} />
         </ActionIcon>
       </Menu.Target>

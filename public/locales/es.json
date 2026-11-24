@@ -12,6 +12,8 @@
     "delete": "Eliminar",
     "edit": "Editar",
     "confirm": "Confirmar",
+    "logout": "Cerrar sesión",
+    "confirmation": "Confirmación",
     "back": "Atrás",
     "next": "Siguiente",
     "close": "Cerrar",
@@ -24,7 +26,6 @@
     "copy": "Copiar",
     "copied": "¡Copiado!",
     "or": "o",
-    "currency": "₽",
     "months": "mes.",
     "days": "d.",
     "hours": "h.",
@@ -43,7 +44,13 @@
     "publicOffer": "Oferta pública",
     "userAgreement": "Acuerdo de usuario",
     "contacts": "Contactos",
-    "document": "Documento"
+    "document": "Documento",
+    "changeLanguage": "Cambiar idioma",
+    "currentLanguage": "Idioma actual: {{language}}",
+    "noData": "Sin datos",
+    "pushNotifications": "Notificaciones push",
+    "toggleTheme": "Cambiar tema",
+    "version": "Versión"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -226,7 +233,36 @@
     "oauth2Unbind": "Cuenta desvinculada correctamente",
     "oauth2UnbindError": "No se pudo desvincular la cuenta",
     "oauth2WaitTitle": "Esperando confirmación",
-    "oauth2WaitDescription": "Una vez confirmado, volverá automáticamente a su cuenta."
+    "oauth2WaitDescription": "Una vez confirmado, volverá automáticamente a su cuenta.",
+    "pushPermissionDenied": "Se ha denegado el permiso para enviar notificaciones",
+    "pushSubscribeError": "No se han podido activar las notificaciones",
+    "pushUnsubscribeError": "No se han podido desactivar las notificaciones",
+    "telegramUnlinkError": "No se ha podido desvincular Telegram",
+    "telegramUnlinked": "Telegram desvinculado"
+  },
+  "routing": {
+    "outbound": "Salida",
+    "rules": "Reglas",
+    "help": "Una regla por línea. El resto del tráfico sigue las rutas de la plataforma.",
+    "example": "socks5://usuario:contraseña@servidor:puerto\nEnlace de SS\nConfiguración completa de WireGuard",
+    "unconfigured": "Sin configurar",
+    "queued": "En cola",
+    "submitted": "Enviado",
+    "disabled": "Desactivación enviada",
+    "pending_disable": "Desactivación pendiente",
+    "estimated": "Envío previsto",
+    "waiting": "Esperando al servicio",
+    "error": "Error de sincronización",
+    "enable": "Activar",
+    "disable": "Desactivar",
+    "unavailable": "El enrutamiento no está disponible para este servicio.",
+    "badOutbound": "Comprueba la dirección, el protocolo y las credenciales de salida.",
+    "badRules": "Introduce un dominio, IP, CIDR, geosite o geoip por línea.",
+    "denied": "La salida debe usar una dirección pública permitida.",
+    "retry": "No se ha podido cargar o guardar la configuración. Vuelve a intentarlo.",
+    "panel": "Vuelve a comprobar el estado o contacta con soporte.",
+    "targetChanged": "El servicio ha cambiado de servidor. Una vez retiradas las reglas anteriores, pulsa «Guardar» para usar esta salida y estas reglas en el nuevo servidor.",
+    "unconfirmed": "Todavía no se ha confirmado el envío. Se conservan los datos del formulario mientras se consulta el estado."
   },
   "services": {
     "title": "Mis servicios",
@@ -235,6 +271,8 @@
     "serviceDetails": "Detalles del servicio",
     "info": "Información",
     "connection": "Conexión",
+    "routing": "Enrutamiento",
+    "routingLoadError": "No se ha podido cargar el enrutamiento. Actualiza para volver a intentarlo.",
     "status": "Estado",
     "cost": "Costo",
     "description": "Nota",
@@ -276,10 +314,10 @@
     "serviceStopped": "Servicio detenido",
     "serviceStopError": "Error al detener el servicio",
     "amountToPay": "A pagar",
-    "payService": "Pagar {{amount}} ₽",
-    "savings": "Ahorras {{amount}} ₽ con descuento",
-    "savings_bonus": "Acreditaremos {{amount}} ₽ en bonos",
-    "profit": "Tu beneficio es {{amount}} ₽ considerando descuento y bonos",
+    "payService": "Pagar {{amount}}",
+    "savings": "Ahorras {{amount}} con descuento",
+    "savings_bonus": "Acreditaremos {{amount}} en bonos",
+    "profit": "Tu beneficio es {{amount}} considerando descuento y bonos",
     "emailNotVerifiedtitle": "Correo no verificado",
     "emailNotVerifiedDesc": "Para contratar servicios, debes verificar tu dirección de correo. Por favor verifica tu correo para continuar.",
     "emailNotVerifiedAction": "Verificar correo"
@@ -327,7 +365,8 @@
     "autopaymentDeleteError": "Error al eliminar el pago automático",
     "paymentSuccess": "Pago completado correctamente",
     "internalPaymentSuccess": "Solicitud de pago completada",
-    "paymentError": "Error en el pago"
+    "paymentError": "Error en el pago",
+    "invalidAmount": "Introduce un importe válido con un máximo de dos decimales."
   },
   "order": {
     "title": "Contratar servicio",
@@ -337,12 +376,12 @@
     "period": "Período",
     "yourBalance": "Tu saldo",
     "enoughToPay": "Saldo suficiente",
-    "needTopUp": "Necesitas recargar {{amount}} ₽",
-    "orderFor": "Contratar por {{amount}} ₽",
+    "needTopUp": "Necesitas recargar {{amount}}",
+    "orderFor": "Contratar por {{amount}}",
     "topUpBalance": "Recargar saldo",
     "minimum": "Mínimo",
     "missingAmount": "importe faltante",
-    "orderAndPay": "Contratar y pagar {{amount}} ₽",
+    "orderAndPay": "Contratar y pagar {{amount}}",
     "noServicesAvailable": "No hay servicios disponibles para contratar",
     "loadError": "Error al cargar la lista de servicios",
     "orderSuccess": "Servicio \"{{name}}\" contratado y pagado desde el saldo",
@@ -361,11 +400,14 @@
     "enterCode": "Introduce el código promocional",
     "applied": "Código promocional aplicado",
     "applyError": "Error al aplicar el código promocional",
-    "success": "¡Código promocional \"{{code}}\" aplicado! {{amount}} ₽ acreditados",
+    "success": "¡Código promocional \"{{code}}\" aplicado! {{amount}} acreditados",
     "error": "Código promocional inválido o ya utilizado"
   },
   "withdrawals": {
     "title": "Retiros",
+    "usage": "Consumo facturable",
+    "usageOpen": "Pendiente / {{limit}}",
+    "usageUnknown": "No disponible / {{limit}}",
     "historyEmpty": "El historial de retiros está vacío",
     "withdrawDate": "Fecha de retiro",
     "endDate": "Fecha de fin",
@@ -510,5 +552,42 @@
     "code": "es",
     "label": "Español",
     "flag": "🇪🇸"
+  },
+  "subscription": {
+    "title": "Uso de la suscripción",
+    "status": "Estado de la suscripción",
+    "trafficUsed": "Tráfico utilizado",
+    "trafficLimit": "Límite de tráfico",
+    "trafficRemaining": "Tráfico restante",
+    "resetCycle": "Reinicio del tráfico",
+    "expiresAt": "Vencimiento de la suscripción",
+    "deviceLimit": "Límite de dispositivos",
+    "devices": "{{count}} dispositivos",
+    "unlimited": "Sin límite",
+    "panelDefault": "Valor predeterminado del panel",
+    "snapshotHint": "Datos de la última sincronización del servicio.",
+    "loadError": "No se pudieron cargar los datos de conexión. Inténtalo de nuevo.",
+    "notReady": "Los datos de conexión aún no están disponibles. Actualiza más tarde.",
+    "statusLabels": {
+      "ACTIVE": "Activa",
+      "DISABLED": "Desactivada",
+      "LIMITED": "Límite de tráfico alcanzado",
+      "EXPIRED": "Vencida"
+    },
+    "strategies": {
+      "NO_RESET": "Sin reinicio automático",
+      "DAY": "Diario",
+      "WEEK": "Semanal",
+      "MONTH": "Mensual",
+      "MONTH_ROLLING": "Mensual (en el día de creación)"
+    }
+  },
+  "homeScreen": {
+    "title": "Añade {{appName}} a la pantalla de inicio",
+    "tap": "Pulsa",
+    "toolbar": "en la barra de herramientas",
+    "bottomBar": "en la barra inferior",
+    "choose": "Selecciona",
+    "add": "Añadir a la pantalla de inicio"
   }
 }

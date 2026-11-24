@@ -24,7 +24,6 @@
     "copy": "Copy",
     "copied": "Copied!",
     "or": "or",
-    "currency": "₽",
     "months": "mo.",
     "days": "d.",
     "hours": "h.",
@@ -43,7 +42,15 @@
     "publicOffer": "Public offer",
     "userAgreement": "User agreement",
     "contacts": "Contacts",
-    "document": "Document"
+    "document": "Document",
+    "logout": "Logout",
+    "confirmation": "Confirmation",
+    "changeLanguage": "Change language",
+    "currentLanguage": "Current language: {{language}}",
+    "toggleTheme": "Toggle color scheme",
+    "pushNotifications": "Push notifications",
+    "noData": "No data",
+    "version": "Version"
   },
   "auth": {
     "login": "Login",
@@ -226,7 +233,36 @@
     "oauth2Unbind": "Account successfully unlinked",
     "oauth2UnbindError": "Failed to unlink account",
     "oauth2WaitTitle": "Waiting for confirmation",
-    "oauth2WaitDescription": "You will be returned automatically once confirmed."
+    "oauth2WaitDescription": "You will be returned automatically once confirmed.",
+    "telegramUnlinked": "Telegram unlinked",
+    "telegramUnlinkError": "Failed to unlink Telegram",
+    "pushPermissionDenied": "Notification permission denied",
+    "pushSubscribeError": "Failed to subscribe to notifications",
+    "pushUnsubscribeError": "Failed to unsubscribe from notifications"
+  },
+  "routing": {
+    "outbound": "Outbound",
+    "rules": "Rules",
+    "help": "One rule per line. Unmatched traffic follows the platform routes.",
+    "example": "socks5://user:password@server:port\nSS share link\nComplete WireGuard configuration",
+    "unconfigured": "Not configured",
+    "queued": "Queued",
+    "submitted": "Submitted",
+    "disabled": "Disable submitted",
+    "pending_disable": "Disable pending",
+    "estimated": "Estimated submission",
+    "waiting": "Waiting for service",
+    "error": "Sync failed",
+    "enable": "Enable",
+    "disable": "Disable",
+    "unavailable": "Routing is unavailable for this service.",
+    "badOutbound": "Check the outbound address, protocol and credentials.",
+    "badRules": "Enter one domain, IP, CIDR, geosite or geoip rule per line.",
+    "denied": "The outbound must use a permitted public address.",
+    "retry": "Could not save or load the configuration. Try again.",
+    "panel": "Check the sync status again or contact support.",
+    "targetChanged": "Your service has moved. Once the old rules are removed, select Save to use this outbound and these rules on the new server.",
+    "unconfirmed": "The result is unconfirmed. Your input has been kept while the sync status is checked."
   },
   "services": {
     "title": "My Services",
@@ -235,6 +271,8 @@
     "serviceDetails": "Service details",
     "info": "Information",
     "connection": "Connection",
+    "routing": "Routing",
+    "routingLoadError": "Routing could not be loaded. Refresh to try again.",
     "status": "Status",
     "cost": "Cost",
     "description": "Note",
@@ -276,10 +314,10 @@
     "serviceStopped": "Service stopped",
     "serviceStopError": "Failed to stop service",
     "amountToPay": "Amount to pay",
-    "payService": "Pay {{amount}} ₽",
-    "savings": "You save {{amount}} ₽ with discount",
-    "savings_bonus": "We will credit {{amount}} ₽ in bonuses",
-    "profit": "Your profit is {{amount}} ₽ considering discount and bonuses",
+    "payService": "Pay {{amount}}",
+    "savings": "You save {{amount}} with discount",
+    "savings_bonus": "We will credit {{amount}} in bonuses",
+    "profit": "Your profit is {{amount}} considering discount and bonuses",
     "emailNotVerifiedtitle": "Email not verified",
     "emailNotVerifiedDesc": "To order services, you need to verify your email address. Please verify your email to continue.",
     "emailNotVerifiedAction": "Confirm email"
@@ -327,7 +365,8 @@
     "autopaymentDeleteError": "Failed to delete autopayment",
     "paymentSuccess": "Payment completed successfully",
     "internalPaymentSuccess": "Payment request completed",
-    "paymentError": "Payment failed"
+    "paymentError": "Payment failed",
+    "invalidAmount": "Enter a valid amount with no more than two decimal places"
   },
   "order": {
     "title": "Order service",
@@ -337,12 +376,12 @@
     "period": "Period",
     "yourBalance": "Your balance",
     "enoughToPay": "Enough to pay",
-    "needTopUp": "Need to top up {{amount}} ₽",
-    "orderFor": "Order for {{amount}} ₽",
+    "needTopUp": "Need to top up {{amount}}",
+    "orderFor": "Order for {{amount}}",
     "topUpBalance": "Top up balance",
     "minimum": "Minimum",
     "missingAmount": "missing amount",
-    "orderAndPay": "Order and pay {{amount}} ₽",
+    "orderAndPay": "Order and pay {{amount}}",
     "noServicesAvailable": "No services available for order",
     "loadError": "Failed to load services list",
     "orderSuccess": "Service \"{{name}}\" ordered and paid from balance",
@@ -361,11 +400,14 @@
     "enterCode": "Enter promo code",
     "applied": "Promo code applied",
     "applyError": "Failed to apply promo code",
-    "success": "Promo code \"{{code}}\" applied! {{amount}} ₽ credited",
+    "success": "Promo code \"{{code}}\" applied! {{amount}} credited",
     "error": "Invalid promo code or it has already been used"
   },
   "withdrawals": {
     "title": "Withdrawals",
+    "usage": "Billable usage",
+    "usageOpen": "Pending / {{limit}}",
+    "usageUnknown": "Unavailable / {{limit}}",
     "historyEmpty": "Withdrawal history is empty",
     "withdrawDate": "Withdrawal date",
     "endDate": "End date",
@@ -513,5 +555,42 @@
     "code": "en",
     "label": "English",
     "flag": "🇺🇸"
+  },
+  "homeScreen": {
+    "title": "Add {{appName}} to your home screen",
+    "tap": "Tap",
+    "toolbar": "in the toolbar",
+    "bottomBar": "in the bottom bar",
+    "choose": "Choose",
+    "add": "Add to Home Screen"
+  },
+  "subscription": {
+    "title": "Subscription usage",
+    "status": "Subscription status",
+    "trafficUsed": "Traffic used",
+    "trafficLimit": "Traffic limit",
+    "trafficRemaining": "Traffic remaining",
+    "resetCycle": "Traffic reset",
+    "expiresAt": "Subscription expires",
+    "deviceLimit": "Device limit",
+    "devices": "{{count}} devices",
+    "unlimited": "Unlimited",
+    "panelDefault": "Panel default",
+    "snapshotHint": "Data from the most recent service sync.",
+    "loadError": "Unable to load connection details. Please retry.",
+    "notReady": "Connection details are not ready yet. Please refresh later.",
+    "statusLabels": {
+      "ACTIVE": "Active",
+      "DISABLED": "Disabled",
+      "LIMITED": "Traffic limit reached",
+      "EXPIRED": "Expired"
+    },
+    "strategies": {
+      "NO_RESET": "No automatic reset",
+      "DAY": "Daily",
+      "WEEK": "Weekly",
+      "MONTH": "Monthly",
+      "MONTH_ROLLING": "Monthly (creation-day anchor)"
+    }
   }
 }

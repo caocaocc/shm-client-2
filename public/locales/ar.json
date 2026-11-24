@@ -12,6 +12,8 @@
     "delete": "حذف",
     "edit": "تعديل",
     "confirm": "تأكيد",
+    "logout": "تسجيل الخروج",
+    "confirmation": "تأكيد الإجراء",
     "back": "رجوع",
     "next": "التالي",
     "close": "إغلاق",
@@ -24,7 +26,6 @@
     "copy": "نسخ",
     "copied": "تم النسخ!",
     "or": "أو",
-    "currency": "₽",
     "months": "شهر.",
     "days": "يوم.",
     "hours": "ساعة.",
@@ -51,7 +52,13 @@
     "publicOffer": "العرض العام",
     "userAgreement": "اتفاقية المستخدم",
     "contacts": "جهات الاتصال",
-    "document": "وثيقة"
+    "document": "وثيقة",
+    "changeLanguage": "تغيير اللغة",
+    "currentLanguage": "اللغة الحالية: {{language}}",
+    "noData": "لا توجد بيانات",
+    "pushNotifications": "الإشعارات الفورية",
+    "toggleTheme": "تغيير المظهر",
+    "version": "الإصدار"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -234,7 +241,36 @@
     "oauth2Unbind": "تم إلغاء ربط الحساب بنجاح",
     "oauth2UnbindError": "تعذر إلغاء ربط الحساب",
     "oauth2WaitTitle": "في انتظار التأكيد",
-    "oauth2WaitDescription": "بعد التأكيد ستتم إعادتك تلقائيًا."
+    "oauth2WaitDescription": "بعد التأكيد ستتم إعادتك تلقائيًا.",
+    "pushPermissionDenied": "لم يُمنح الإذن بإرسال الإشعارات",
+    "pushSubscribeError": "تعذّر تفعيل الإشعارات",
+    "pushUnsubscribeError": "تعذّر إيقاف الإشعارات",
+    "telegramUnlinkError": "تعذّر إلغاء ربط حساب تيليجرام",
+    "telegramUnlinked": "تم إلغاء ربط حساب تيليجرام"
+  },
+  "routing": {
+    "outbound": "المخرج",
+    "rules": "القواعد",
+    "help": "قاعدة واحدة في كل سطر. يتبع باقي المرور مسارات المنصة.",
+    "example": "socks5://المستخدم:كلمة_المرور@الخادم:المنفذ\nرابط مشاركة SS\nإعداد WireGuard الكامل",
+    "unconfigured": "غير مضبوط",
+    "queued": "في قائمة الانتظار",
+    "submitted": "تم الإرسال",
+    "disabled": "أُرسل طلب التعطيل",
+    "pending_disable": "التعطيل قيد الانتظار",
+    "estimated": "موعد الإرسال المتوقع",
+    "waiting": "بانتظار الخدمة",
+    "error": "فشلت المزامنة",
+    "enable": "تفعيل",
+    "disable": "تعطيل",
+    "unavailable": "التوجيه غير متاح لهذه الخدمة.",
+    "badOutbound": "تحقق من عنوان المخرج والبروتوكول وبيانات الدخول.",
+    "badRules": "أدخل نطاقاً أو IP أو CIDR أو geosite أو geoip في كل سطر.",
+    "denied": "يجب أن يستخدم المخرج عنواناً عاماً مسموحاً.",
+    "retry": "تعذّر تحميل الإعدادات أو حفظها. حاول مجدداً.",
+    "panel": "تحقق من الحالة مجدداً أو تواصل مع الدعم.",
+    "targetChanged": "نُقلت خدمتك إلى خادم آخر. بعد إزالة القواعد القديمة، اضغط «حفظ» لاستخدام هذا المخرج وهذه القواعد على الخادم الجديد.",
+    "unconfirmed": "لم تتأكد نتيجة الإرسال بعد. تبقى مدخلاتك في النموذج أثناء التحقق مجدداً من حالة المزامنة."
   },
   "services": {
     "title": "خدماتي",
@@ -243,6 +279,8 @@
     "serviceDetails": "تفاصيل الخدمة",
     "info": "معلومات",
     "connection": "الاتصال",
+    "routing": "التوجيه",
+    "routingLoadError": "تعذّر تحميل إعدادات التوجيه. حدّث الصفحة للمحاولة مجددًا.",
     "status": "الحالة",
     "cost": "التكلفة",
     "description": "ملاحظة",
@@ -284,10 +322,10 @@
     "serviceStopped": "تم إيقاف الخدمة",
     "serviceStopError": "فشل إيقاف الخدمة",
     "amountToPay": "للدفع",
-    "payService": "دفع {{amount}} ₽",
-    "savings": "توفر {{amount}} ₽ مع الخصم",
-    "savings_bonus": "سنضيف {{amount}} ₽ كمكافآت",
-    "profit": "ربحك {{amount}} ₽ مع الخصم والمكافآت",
+    "payService": "دفع {{amount}}",
+    "savings": "توفر {{amount}} مع الخصم",
+    "savings_bonus": "سنضيف {{amount}} كمكافآت",
+    "profit": "ربحك {{amount}} مع الخصم والمكافآت",
     "emailNotVerifiedtitle": "لم يتم التحقق من البريد الإلكتروني",
     "emailNotVerifiedDesc": "لطلب الخدمات، يجب التحقق من عنوان بريدك الإلكتروني. يرجى التحقق من بريدك للمتابعة.",
     "emailNotVerifiedAction": "التحقق من البريد الإلكتروني"
@@ -335,7 +373,8 @@
     "autopaymentDeleteError": "فشل حذف الدفع التلقائي",
     "paymentSuccess": "تمت عملية الدفع بنجاح",
     "internalPaymentSuccess": "تم تنفيذ طلب الدفع",
-    "paymentError": "فشلت عملية الدفع"
+    "paymentError": "فشلت عملية الدفع",
+    "invalidAmount": "أدخل مبلغًا صالحًا بما لا يزيد عن منزلتين عشريتين."
   },
   "order": {
     "title": "طلب خدمة",
@@ -345,12 +384,12 @@
     "period": "المدة",
     "yourBalance": "رصيدك",
     "enoughToPay": "رصيد كافٍ",
-    "needTopUp": "تحتاج إلى شحن {{amount}} ₽",
-    "orderFor": "طلب بـ {{amount}} ₽",
+    "needTopUp": "تحتاج إلى شحن {{amount}}",
+    "orderFor": "طلب بـ {{amount}}",
     "topUpBalance": "شحن الرصيد",
     "minimum": "الحد الأدنى",
     "missingAmount": "المبلغ الناقص",
-    "orderAndPay": "طلب ودفع {{amount}} ₽",
+    "orderAndPay": "طلب ودفع {{amount}}",
     "noServicesAvailable": "لا توجد خدمات متاحة للطلب",
     "loadError": "فشل تحميل قائمة الخدمات",
     "orderSuccess": "تم طلب خدمة \"{{name}}\" ودفعها من الرصيد",
@@ -369,11 +408,14 @@
     "enterCode": "أدخل الرمز الترويجي",
     "applied": "تم تطبيق الرمز الترويجي",
     "applyError": "فشل تطبيق الرمز الترويجي",
-    "success": "تم تطبيق الرمز الترويجي \"{{code}}\"! تمت إضافة {{amount}} ₽",
+    "success": "تم تطبيق الرمز الترويجي \"{{code}}\"! تمت إضافة {{amount}}",
     "error": "رمز ترويجي غير صالح أو تم استخدامه بالفعل"
   },
   "withdrawals": {
     "title": "الخصومات",
+    "usage": "الاستهلاك المحتسب",
+    "usageOpen": "قيد التسوية / {{limit}}",
+    "usageUnknown": "غير متاح / {{limit}}",
     "historyEmpty": "سجل الخصومات فارغ",
     "withdrawDate": "تاريخ الخصم",
     "endDate": "تاريخ الانتهاء",
@@ -518,5 +560,42 @@
     "code": "ar",
     "label": "العربية",
     "flag": "🇸🇦"
+  },
+  "subscription": {
+    "title": "استخدام الاشتراك",
+    "status": "حالة الاشتراك",
+    "trafficUsed": "البيانات المستخدمة",
+    "trafficLimit": "حد البيانات",
+    "trafficRemaining": "البيانات المتبقية",
+    "resetCycle": "إعادة تعيين البيانات",
+    "expiresAt": "انتهاء الاشتراك",
+    "deviceLimit": "حد الأجهزة",
+    "devices": "{{count}} أجهزة",
+    "unlimited": "غير محدود",
+    "panelDefault": "الإعداد الافتراضي للوحة",
+    "snapshotHint": "بيانات آخر مزامنة للخدمة.",
+    "loadError": "تعذر تحميل بيانات الاتصال. يرجى المحاولة مجددًا.",
+    "notReady": "بيانات الاتصال غير جاهزة بعد. يرجى التحديث لاحقًا.",
+    "statusLabels": {
+      "ACTIVE": "نشط",
+      "DISABLED": "معطل",
+      "LIMITED": "تم بلوغ حد البيانات",
+      "EXPIRED": "منتهي الصلاحية"
+    },
+    "strategies": {
+      "NO_RESET": "بدون إعادة تعيين تلقائية",
+      "DAY": "يوميًا",
+      "WEEK": "أسبوعيًا",
+      "MONTH": "شهريًا",
+      "MONTH_ROLLING": "شهريًا (في يوم الإنشاء)"
+    }
+  },
+  "homeScreen": {
+    "title": "أضف {{appName}} إلى شاشتك الرئيسية",
+    "tap": "اضغط على",
+    "toolbar": "في شريط الأدوات",
+    "bottomBar": "في الشريط السفلي",
+    "choose": "اختر",
+    "add": "إضافة إلى الشاشة الرئيسية"
   }
 }

@@ -12,6 +12,8 @@
     "delete": "O'chirish",
     "edit": "Tahrirlash",
     "confirm": "Tasdiqlash",
+    "logout": "Chiqish",
+    "confirmation": "Tasdiqlash",
     "back": "Orqaga",
     "next": "Keyingi",
     "close": "Yopish",
@@ -24,7 +26,6 @@
     "copy": "Nusxa olish",
     "copied": "Nusxa olindi!",
     "or": "yoki",
-    "currency": "₽",
     "months": "oy.",
     "days": "kun.",
     "hours": "soat.",
@@ -41,7 +42,13 @@
     "publicOffer": "Ommaviy oferta",
     "userAgreement": "Foydalanuvchi shartnomasi",
     "contacts": "Aloqa",
-    "document": "Hujjat"
+    "document": "Hujjat",
+    "changeLanguage": "Tilni o‘zgartirish",
+    "currentLanguage": "Joriy til: {{language}}",
+    "noData": "Ma’lumot yo‘q",
+    "pushNotifications": "Push-bildirishnomalar",
+    "toggleTheme": "Rang mavzusini almashtirish",
+    "version": "Versiya"
   },
   "auth": {
     "login": "Kirish",
@@ -224,7 +231,36 @@
     "oauth2Unbind": "Hisob muvaffaqiyatli uzildi",
     "oauth2UnbindError": "Hisobni uzib bo’lmadi",
     "oauth2WaitTitle": "Tasdiqlash kutilmoqda",
-    "oauth2WaitDescription": "Tasdiqlangandan so’ng avtomatik ravishda qaytarilasiz."
+    "oauth2WaitDescription": "Tasdiqlangandan so’ng avtomatik ravishda qaytarilasiz.",
+    "pushPermissionDenied": "Bildirishnomalar uchun ruxsat berilmadi",
+    "pushSubscribeError": "Bildirishnomalarni yoqib bo‘lmadi",
+    "pushUnsubscribeError": "Bildirishnomalarni o‘chirib bo‘lmadi",
+    "telegramUnlinkError": "Telegram hisobini uzib bo‘lmadi",
+    "telegramUnlinked": "Telegram hisobi uzildi"
+  },
+  "routing": {
+    "outbound": "Chiqish",
+    "rules": "Qoidalar",
+    "help": "Har bir satrga bitta qoida yozing. Qolgan trafik platforma yo‘nalishlari orqali o‘tadi.",
+    "example": "socks5://foydalanuvchi:parol@server:port\nSS ulashish havolasi\nTo‘liq WireGuard konfiguratsiyasi",
+    "unconfigured": "Sozlanmagan",
+    "queued": "Navbatda",
+    "submitted": "Yuborildi",
+    "disabled": "O‘chirish yuborildi",
+    "pending_disable": "O‘chirish kutilmoqda",
+    "estimated": "Taxminiy yuborish vaqti",
+    "waiting": "Xizmat kutilmoqda",
+    "error": "Sinxronlashda xato",
+    "enable": "Yoqish",
+    "disable": "O‘chirish",
+    "unavailable": "Bu xizmat uchun marshrutlash mavjud emas.",
+    "badOutbound": "Chiqish manzili, protokol va kirish ma’lumotlarini tekshiring.",
+    "badRules": "Har bir satrga domen, IP, CIDR, geosite yoki geoip kiriting.",
+    "denied": "Chiqish manzili ruxsat etilgan ommaviy manzil bo‘lishi kerak.",
+    "retry": "Sozlamalarni yuklash yoki saqlash imkoni bo‘lmadi. Qayta urinib ko‘ring.",
+    "panel": "Holatni qayta tekshiring yoki yordam xizmatiga murojaat qiling.",
+    "targetChanged": "Xizmat boshqa serverga ko‘chirildi. Eski qoidalar olib tashlangach, chiqish va qoidalarni yangi serverda ishlatish uchun «Saqlash»ni bosing.",
+    "unconfirmed": "Yuborish natijasi tasdiqlanmadi. Holat qayta tekshirilayotganda kiritgan ma’lumotlaringiz shaklda qoladi."
   },
   "services": {
     "title": "Mening xizmatlarim",
@@ -233,6 +269,8 @@
     "serviceDetails": "Xizmat tafsilotlari",
     "info": "Ma'lumot",
     "connection": "Ulanish",
+    "routing": "Marshrutlash",
+    "routingLoadError": "Marshrutlash sozlamalarini yuklab bo‘lmadi. Qayta urinish uchun yangilang.",
     "status": "Holat",
     "cost": "Narx",
     "description": "Izoh",
@@ -274,10 +312,10 @@
     "serviceStopped": "Xizmat to'xtatildi",
     "serviceStopError": "Xizmatni to'xtatib bo'lmadi",
     "amountToPay": "To'lash kerak",
-    "payService": "{{amount}} ₽ to'lash",
-    "savings": "Chegirma bilan {{amount}} ₽ tejaysiz",
-    "savings_bonus": "{{amount}} ₽ bonus hisoblab chiqamiz",
-    "profit": "Chegirma va bonuslarni hisobga olgan holda foyda {{amount}} ₽",
+    "payService": "{{amount}} to'lash",
+    "savings": "Chegirma bilan {{amount}} tejaysiz",
+    "savings_bonus": "{{amount}} bonus hisoblab chiqamiz",
+    "profit": "Chegirma va bonuslarni hisobga olgan holda foyda {{amount}}",
     "emailNotVerifiedtitle": "Elektron pochta tasdiqlanmagan",
     "emailNotVerifiedDesc": "Xizmat buyurtma qilish uchun elektron pochta manzilingizni tasdiqlashingiz kerak. Davom etish uchun elektron pochtangizni tasdiqlang.",
     "emailNotVerifiedAction": "Elektron pochtani tasdiqlash"
@@ -325,7 +363,8 @@
     "autopaymentDeleteError": "Avtomatik to'lovni o'chirib bo'lmadi",
     "paymentSuccess": "To'lov muvaffaqiyatli amalga oshirildi",
     "internalPaymentSuccess": "To'lov so'rovi bajarildi",
-    "paymentError": "To'lovda xato yuz berdi"
+    "paymentError": "To'lovda xato yuz berdi",
+    "invalidAmount": "Kasr qismida ko‘pi bilan ikki raqami bo‘lgan summani kiriting."
   },
   "order": {
     "title": "Xizmat buyurtma qilish",
@@ -335,12 +374,12 @@
     "period": "Davr",
     "yourBalance": "Sizning balansingiz",
     "enoughToPay": "To'lash uchun yetarli",
-    "needTopUp": "{{amount}} ₽ to'ldirish kerak",
-    "orderFor": "{{amount}} ₽ ga buyurtma berish",
+    "needTopUp": "{{amount}} to'ldirish kerak",
+    "orderFor": "{{amount}} ga buyurtma berish",
     "topUpBalance": "Balansni to'ldirish",
     "minimum": "Minimum",
     "missingAmount": "yetishmayotgan summa",
-    "orderAndPay": "Buyurtma berish va {{amount}} ₽ to'lash",
+    "orderAndPay": "Buyurtma berish va {{amount}} to'lash",
     "noServicesAvailable": "Buyurtma qilish uchun mavjud xizmatlar yo'q",
     "loadError": "Xizmatlar ro'yxatini yuklab bo'lmadi",
     "orderSuccess": "\"{{name}}\" xizmati buyurtma qilindi va balansdan to'landi",
@@ -359,11 +398,14 @@
     "enterCode": "Promo kodni kiriting",
     "applied": "Promo kod qo'llanildi",
     "applyError": "Promo kodni qo'llab bo'lmadi",
-    "success": "\"{{code}}\" promo kodi qo'llanildi! {{amount}} ₽ hisoblab qo'yildi",
+    "success": "\"{{code}}\" promo kodi qo'llanildi! {{amount}} hisoblab qo'yildi",
     "error": "Noto'g'ri promo kod yoki allaqachon ishlatilgan"
   },
   "withdrawals": {
     "title": "Hisobdan chiqarishlar",
+    "usage": "Hisoblangan trafik",
+    "usageOpen": "Hisoblanmoqda / {{limit}}",
+    "usageUnknown": "Ma’lumot yo‘q / {{limit}}",
     "historyEmpty": "Hisobdan chiqarishlar tarixi bo'sh",
     "withdrawDate": "Chiqarish sanasi",
     "endDate": "Tugash sanasi",
@@ -508,5 +550,42 @@
     "code": "uz",
     "label": "Oʻzbekcha",
     "flag": "🇺🇿"
+  },
+  "subscription": {
+    "title": "Obunadan foydalanish",
+    "status": "Obuna holati",
+    "trafficUsed": "Ishlatilgan trafik",
+    "trafficLimit": "Trafik chegarasi",
+    "trafficRemaining": "Qolgan trafik",
+    "resetCycle": "Trafikni yangilash",
+    "expiresAt": "Obuna tugash vaqti",
+    "deviceLimit": "Qurilmalar chegarasi",
+    "devices": "{{count}} ta qurilma",
+    "unlimited": "Cheklanmagan",
+    "panelDefault": "Panelning standart qiymati",
+    "snapshotHint": "Xizmatning oxirgi sinxronlashidagi ma’lumotlar.",
+    "loadError": "Ulanish ma’lumotlarini yuklab bo‘lmadi. Qayta urinib ko‘ring.",
+    "notReady": "Ulanish ma’lumotlari hali tayyor emas. Keyinroq yangilang.",
+    "statusLabels": {
+      "ACTIVE": "Faol",
+      "DISABLED": "O‘chirilgan",
+      "LIMITED": "Trafik chegarasiga yetildi",
+      "EXPIRED": "Muddati tugagan"
+    },
+    "strategies": {
+      "NO_RESET": "Avtomatik yangilanmaydi",
+      "DAY": "Har kuni",
+      "WEEK": "Har hafta",
+      "MONTH": "Har oy",
+      "MONTH_ROLLING": "Har oy (yaratilgan sanada)"
+    }
+  },
+  "homeScreen": {
+    "title": "{{appName}} ilovasini bosh ekranga qo‘shish",
+    "tap": "Quyidagi tugmani bosing:",
+    "toolbar": "(asboblar panelida)",
+    "bottomBar": "(pastki panelda)",
+    "choose": "Quyidagi bandni tanlang:",
+    "add": "Bosh ekranga qo‘shish"
   }
 }

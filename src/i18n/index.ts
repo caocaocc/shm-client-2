@@ -4,7 +4,8 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend from 'i18next-http-backend';
 import { config } from '../config';
 
-export const BUILT_IN_LANGS = ['en', 'ru', 'de', 'es', 'fr', 'uz', 'ar'];
+import { BUILT_IN_LANGS, selectLanguage } from './language';
+export { BUILT_IN_LANGS };
 
 export const CUSTOM_LANGS: string[] = config.CUSTOM_LANGS
   ? config.CUSTOM_LANGS.split(',').map(s => s.trim()).filter(Boolean)
@@ -13,10 +14,11 @@ export const CUSTOM_LANGS: string[] = config.CUSTOM_LANGS
 const allLangs = [...BUILT_IN_LANGS, ...CUSTOM_LANGS];
 
 const isSingleLanguage = config.SINGLE_LANGUAGE === 'true';
-const savedLanguage = localStorage.getItem('shm_language');
+let savedLanguage = null;
+try { savedLanguage = localStorage.getItem('shm_language'); } catch { /* Storage may be unavailable. */ }
 
 const activeLangs = isSingleLanguage
-  ? [config.DEFAULT_LANGUAGE || 'en']
+  ? [config.DEFAULT_LANGUAGE]
   : allLangs;
 
 i18n
@@ -27,16 +29,15 @@ i18n
     backend: {
       loadPath: `${import.meta.env.BASE_URL}locales/{{lng}}.json`,
     },
-    lng: isSingleLanguage
-      ? config.DEFAULT_LANGUAGE
-      : (!savedLanguage && config.DEFAULT_LANGUAGE ? config.DEFAULT_LANGUAGE : undefined),
-    fallbackLng: config.DEFAULT_LANGUAGE || 'en',
+    lng: selectLanguage(config.DEFAULT_LANGUAGE, savedLanguage, activeLangs, isSingleLanguage),
+    load: 'currentOnly',
+    fallbackLng: isSingleLanguage ? config.DEFAULT_LANGUAGE : 'en',
     supportedLngs: activeLangs,
     preload: activeLangs,
 
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
+      caches: [],
       lookupLocalStorage: 'shm_language',
     },
 

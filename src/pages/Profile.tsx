@@ -302,13 +302,13 @@ export default function Profile() {
       setUnbindConfirmOpen(false);
       notifications.show({
         title: t('common.success'),
-        message: 'Telegram успешно отвязан',
+        message: t('profile.telegramUnlinked'),
         color: 'green',
       });
     } catch {
       notifications.show({
         title: t('common.error'),
-        message: 'Не удалось отвязать Telegram',
+        message: t('profile.telegramUnlinkError'),
         color: 'red',
       });
     } finally {

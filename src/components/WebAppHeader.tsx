@@ -72,7 +72,7 @@ export function WebAppHeader() {
               color={isSubscribed ? undefined : 'green'}
               size="lg"
               loading={pushLoading}
-              aria-label="Push notifications"
+              aria-label={t('common.pushNotifications')}
             >
               {isSubscribed ? <IconBellOff size={20} /> : <IconBell size={20} />}
             </ActionIcon>
