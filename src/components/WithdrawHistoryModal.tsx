@@ -1,3 +1,4 @@
+import { formatBytes } from '../utils/subscription';
 import { parsePeriod } from '../utils/format';
 import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect } from 'react';
@@ -7,6 +8,7 @@ import { userApi } from '../api/client';
 import DataTable, { Column } from './DataTable';
 
 interface Withdraw {
+  usage?: { limit_bytes: number; used_bytes?: number | null };
   withdraw_id: number;
   user_service_id: number;
   service_id: number;
@@ -48,7 +50,7 @@ export default function WithdrawHistoryModal({ opened, onClose }: WithdrawHistor
   const [totalItems, setTotalItems] = useState(0);
   const [sortField, setSortField] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { money, date } = useDisplay();
 
   const fetchWithdrawals = async (
@@ -136,6 +138,18 @@ export default function WithdrawHistoryModal({ opened, onClose }: WithdrawHistor
     },
   ];
 
+  if (withdrawals.some(row => row.usage)) {
+    columns.push({
+      title: t('withdrawals.usage'),
+      accessor: row => {
+        if (!row.usage) return '—';
+        const { used_bytes, limit_bytes } = row.usage;
+        const limit = formatBytes(limit_bytes, i18n.language);
+        if (typeof used_bytes === 'number') return formatBytes(used_bytes, i18n.language) + ' / ' + limit;
+        return t(used_bytes === null ? 'withdrawals.usageUnknown' : 'withdrawals.usageOpen', { limit });
+      },
+    });
+  }
   return (
     <Modal
       opened={opened}
