@@ -14,6 +14,8 @@ interface AppConfig {
   TERMS_OF_USE_URL: string;
   PUBLIC_OFFER_URL: string;
   USER_AGREEMENT_URL: string;
+  CURRENCY: string;
+  TIMEZONE: string;
   DEFAULT_LANGUAGE: string;
   SINGLE_LANGUAGE: string;
   CUSTOM_LANGS: string;
@@ -105,6 +107,8 @@ function getConfig(): AppConfig {
     TERMS_OF_USE_URL: runtimeConfig?.TERMS_OF_USE_URL || import.meta.env.VITE_TERMS_OF_USE_URL || undefined,
     PUBLIC_OFFER_URL: runtimeConfig?.PUBLIC_OFFER_URL || import.meta.env.VITE_PUBLIC_OFFER_URL || undefined,
     USER_AGREEMENT_URL: runtimeConfig?.USER_AGREEMENT_URL || import.meta.env.VITE_USER_AGREEMENT_URL || undefined,
+    CURRENCY: runtimeConfig?.CURRENCY || import.meta.env.VITE_CURRENCY || '',
+    TIMEZONE: runtimeConfig?.TIMEZONE || import.meta.env.VITE_TIMEZONE || 'Asia/Shanghai',
     DEFAULT_LANGUAGE: resolveDefaultLanguage(runtimeConfig?.DEFAULT_LANGUAGE, import.meta.env.VITE_DEFAULT_LANGUAGE,
       (runtimeConfig?.SINGLE_LANGUAGE || import.meta.env.VITE_SINGLE_LANGUAGE) === 'true'),
     SINGLE_LANGUAGE: runtimeConfig?.SINGLE_LANGUAGE || import.meta.env.VITE_SINGLE_LANGUAGE || undefined,

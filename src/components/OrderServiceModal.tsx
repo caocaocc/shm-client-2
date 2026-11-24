@@ -1,3 +1,5 @@
+import { parsePeriod } from '../utils/format';
+import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Stack, Text, Card, Group, Badge, Loader, Center, Button, Paper, Divider, Select, NumberInput, Alert, Checkbox, ScrollArea } from '@mantine/core';
@@ -57,11 +59,9 @@ function normalizeCategory(category: string): string {
 function formatPeriod(value: number, t: any) {
   if (!value) return '-';
 
-  const [m, rest = ''] = value.toString().split('.');
-
-  const months = Number(m);
-  const days = Number(rest.slice(0, 2) || 0);
-  const hours = Number(rest.slice(2, 4) || 0);
+  const period = parsePeriod(value);
+  if (!period) return '—';
+  const { months, days, hours } = period;
 
   const parts: string[] = [];
 
@@ -88,6 +88,7 @@ export default function OrderServiceModal({
   onChangeSuccess,
 }: OrderServiceModalProps) {
   const { t } = useTranslation();
+  const { money, amountProps } = useDisplay();
   const [services, setServices] = useState<OrderService[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState<OrderService | null>(null);
@@ -408,16 +409,16 @@ export default function OrderServiceModal({
                   <Group gap="xs" align="baseline">
                     {selectedService.cost > getEffectiveCost(selectedService) && (
                       <Text fw={600} size="lg" style={{ textDecoration: 'line-through', color: '#999' }}>
-                        {selectedService.cost} ₽
+                        {money(selectedService.cost)}
                       </Text>
                     )}
                     <Text fw={600} size="lg" color={selectedService.cost > getEffectiveCost(selectedService) ? 'green' : undefined}>
-                      {getEffectiveCost(selectedService)} ₽
+                      {money(getEffectiveCost(selectedService))}
                     </Text>
                   </Group>
                   {selectedService.cost > getEffectiveCost(selectedService) && (
                     <Text size="xs" c="dimmed" mt="xs">
-                      {t('services.profit', { amount: (selectedService.cost - getEffectiveCost(selectedService)).toFixed(2) })}
+                      {t('services.profit', { amount: money(selectedService.cost - getEffectiveCost(selectedService)) })}
                     </Text>
                   )}
                 </div>
@@ -462,11 +463,11 @@ export default function OrderServiceModal({
                 icon={<IconWallet size={18} />}
               >
                 <Group justify="space-between">
-                  <Text size="sm">{t('order.yourBalance')}: <Text span fw={600}>{userBalance} ₽</Text></Text>
+                  <Text size="sm">{t('order.yourBalance')}: <Text span fw={600}>{money(userBalance)}</Text></Text>
                   {userBalance >= getEffectiveCost(selectedService) ? (
                     <Badge color="green" variant="light">{t('order.enoughToPay')}</Badge>
                   ) : (
-                    <Badge color="yellow" variant="light">{t('order.needTopUp', { amount: getTopUpAmount(selectedService, userBalance) })}</Badge>
+                    <Badge color="yellow" variant="light">{t('order.needTopUp', { amount: money(getTopUpAmount(selectedService, userBalance)) })}</Badge>
                   )}
                 </Group>
               </Alert>
@@ -480,7 +481,7 @@ export default function OrderServiceModal({
                   onClick={handleOrder}
                   loading={ordering}
                 >
-                  {t('order.orderFor', { amount: getEffectiveCost(selectedService) })}
+                  {t('order.orderFor', { amount: money(getEffectiveCost(selectedService)) })}
                 </Button>
               ) : (
                 <>
@@ -512,8 +513,8 @@ export default function OrderServiceModal({
                             min={getTopUpAmount(selectedService, userBalance)}
                             step={10}
                             decimalScale={2}
-                            suffix=" ₽"
-                            description={`${t('order.minimum')}: ${getTopUpAmount(selectedService, userBalance).toFixed(2)} ₽ (${t('order.missingAmount')})`}
+                            {...amountProps}
+                            description={`${t('order.minimum')}: ${money(getTopUpAmount(selectedService, userBalance))} (${t('order.missingAmount')})`}
                           />
                         </>
                       )}
@@ -528,7 +529,7 @@ export default function OrderServiceModal({
                     loading={ordering}
                     disabled={!selectedPaySystem || paySystemsLoading}
                   >
-                    {t('order.orderAndPay', { amount: payAmount })}
+                    {t('order.orderAndPay', { amount: money(payAmount) })}
                   </Button>
                 </>
               )}
@@ -568,11 +569,11 @@ export default function OrderServiceModal({
                       <Group gap="sm" align="baseline">
                         {service.cost > getEffectiveCost(service) && (
                           <Text size="sm" c="dimmed" style={{ textDecoration: 'line-through' }}>
-                            {service.cost} ₽
+                            {money(service.cost)}
                           </Text>
                         )}
                         <Text fw={600} color={service.cost > getEffectiveCost(service) ? 'green' : undefined}>
-                          {getEffectiveCost(service)} ₽
+                          {money(getEffectiveCost(service))}
                         </Text>
                         <Text size="xs" c="dimmed">
                           / {formatPeriod(service.period, t)}

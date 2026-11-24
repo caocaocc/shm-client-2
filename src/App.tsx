@@ -9,7 +9,8 @@ import { IconLogout, IconHeadset, IconBell, IconBellOff, IconWallet } from '@tab
 import { useTranslation } from 'react-i18next';
 import { useStore } from './store/useStore';
 import { NAV_ITEMS } from './constants/navigation';
-import { auth } from './api/client';
+import { useDisplay, SystemSettings } from './hooks/useDisplay';
+import { auth, systemApi, type SystemAuthConfig } from './api/client';
 import { removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
 import { config } from './config';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -50,6 +51,7 @@ function AppContent() {
   const emailBlocked = config.EMAIL_REQUIRED === 'true' && isEmailLoaded && !userEmail;
   const { isSupported, isSubscribed, isLoading: pushLoading, error: pushError, subscribe, unsubscribe } = usePushNotifications();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const { money } = useDisplay();
   const { t, i18n } = useTranslation();
   const {
     modalOpen: globalEmailModalOpen,
@@ -352,7 +354,7 @@ function AppContent() {
                   size="xs"
                   onClick={() => setPayModalOpen(true)}
                 >
-                  {user.balance} {t('common.currency')}
+                  {money(user.balance)}
                 </Button>
               )}
               {isSupported && (
@@ -421,6 +423,15 @@ function AppContent() {
 
 function App() {
   const basePath = config.SHM_BASE_PATH && config.SHM_BASE_PATH !== '/' ? config.SHM_BASE_PATH : undefined;
+  const [settings, setSettings] = useState<SystemAuthConfig | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    systemApi.getAuthConfig(controller.signal).then(({ data }) => {
+      const row = Array.isArray(data.data) ? data.data[0] : data.data;
+      if (!controller.signal.aborted) setSettings(row || null);
+    }).catch(() => {});
+    return () => controller.abort();
+  }, []);
   const { i18n } = useTranslation();
 
   useEffect(() => {
@@ -443,7 +454,7 @@ function App() {
       <MantineProvider theme={theme} defaultColorScheme="auto">
         <Notifications position="top-right" />
         <BrowserRouter basename={basePath}>
-          <AppContent />
+          <SystemSettings.Provider value={settings}><AppContent /></SystemSettings.Provider>
         </BrowserRouter>
       </MantineProvider>
     </DirectionProvider>

@@ -1,3 +1,4 @@
+import { useDisplay } from '../hooks/useDisplay';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Group, ActionIcon, useMantineColorScheme, useComputedColorScheme, Tooltip, Indicator, Button } from '@mantine/core';
@@ -19,6 +20,7 @@ export function WebAppHeader() {
   const { setColorScheme } = useMantineColorScheme();
   const { isSupported, isSubscribed, isLoading: pushLoading, error: pushError, subscribe, unsubscribe } = usePushNotifications();
   const { t } = useTranslation();
+  const { money } = useDisplay();
 
   const handleSupportLink = () => {
     if (config.SUPPORT_LINK) {
@@ -47,7 +49,7 @@ export function WebAppHeader() {
           size="xs"
           onClick={() => setPayModalOpen(true)}
         >
-          {user.balance} {t('common.currency')}
+          {money(user.balance)}
         </Button>
       )}
       {isSupported && (

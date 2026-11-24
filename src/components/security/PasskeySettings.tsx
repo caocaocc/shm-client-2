@@ -1,3 +1,4 @@
+import { useDisplay } from '../../hooks/useDisplay';
 import { useState, useEffect } from 'react';
 import { Card, Text, Stack, Group, Button, TextInput, ActionIcon, Loader, Box, Drawer, Modal } from '@mantine/core';
 import { IconFingerprint, IconTrash, IconEdit, IconPlus, IconDeviceMobile } from '@tabler/icons-react';
@@ -34,6 +35,7 @@ interface PasskeySettingsProps {
 
 export default function PasskeySettings({ embedded = false, isActive = true }: PasskeySettingsProps) {
   const { t } = useTranslation();
+  const { date: formatDate } = useDisplay();
   const [credentials, setCredentials] = useState<PasskeyCredential[]>([]);
   const [loading, setLoading] = useState(true);
   const [registering, setRegistering] = useState(false);
@@ -225,13 +227,6 @@ export default function PasskeySettings({ embedded = false, isActive = true }: P
     }
   };
 
-  const formatDate = (dateString: string) => {
-    try {
-      return new Date(dateString).toLocaleDateString();
-    } catch {
-      return dateString;
-    }
-  };
 
   if (!isWebAuthnSupported) {
     const content = (

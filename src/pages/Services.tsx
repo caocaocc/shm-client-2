@@ -1,3 +1,4 @@
+import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Timeline, Text, Stack, Group, Badge, Button, Divider, Modal, ActionIcon, Loader, Center, Paper, Title, Tabs, Code, Tooltip, Accordion, Box, Select, NumberInput, Pagination, TextInput } from '@mantine/core';
@@ -107,7 +108,8 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
   const [editingDescription, setEditingDescription] = useState(false);
   const [descriptionInput, setDescriptionInput] = useState(service.description || '');
   const [savingDescription, setSavingDescription] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { money, date, amountProps } = useDisplay();
   const clipboard = useClipboard({ timeout: 1000 });
 
   const [forecastTotal, setForecastTotal] = useState<number | null>(null);
@@ -446,7 +448,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
             </Group>
             <Group justify="space-between">
               <Text size="sm" c="dimmed">{t('services.cost')}:</Text>
-              <Text size="sm">{service.service.cost} {t('common.currency')}</Text>
+              <Text size="sm">{money(service.service.cost)}</Text>
             </Group>
             <Group justify="space-between" align="flex-start" wrap="nowrap">
               <Text size="sm" c="dimmed" style={{ flexShrink: 0 }}>{t('services.description')}:</Text>
@@ -489,7 +491,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
             {service.expire && (
               <Group justify="space-between">
                 <Text size="sm" c="dimmed">{t('services.validUntil')}:</Text>
-                <Text size="sm">{new Date(service.expire as string).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')}</Text>
+                <Text size="sm">{date(service.expire)}</Text>
               </Group>
             )}
             {service.next && (
@@ -498,7 +500,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                 {nextServiceLoading ? (
                   <Text size="sm">{t('common.loading')}</Text>
                 ) : nextServiceInfo ? (
-                  <Text size="sm">{nextServiceInfo.name} - {nextServiceInfo.cost} {t('common.currency')}</Text>
+                  <Text size="sm">{nextServiceInfo.name} - {money(nextServiceInfo.cost)}</Text>
                 ) : (
                   <Text size="sm">{service.next}</Text>
                 )}
@@ -672,7 +674,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                     <IconWallet size={18} />
                     <Text fw={500}>{t('services.amountToPay')}</Text>
                   </Group>
-                  <Text fw={700} size="lg" c="red">{forecastTotal.toFixed(2)} {t('common.currency')}</Text>
+                  <Text fw={700} size="lg" c="red">{money(forecastTotal)}</Text>
                 </Group>
                 {paySystemsLoading ? (
                   <Group justify="center" py="xs">
@@ -694,7 +696,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                       min={1}
                       step={10}
                       decimalScale={2}
-                      suffix=" ₽"
+                      {...amountProps}
                       size="sm"
                     />
                     <Button
@@ -704,7 +706,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                       loading={paying}
                       disabled={!selectedPaySystem}
                     >
-                      {t('services.payService', { amount: payAmount })}
+                      {t('services.payService', { amount: money(payAmount) })}
                     </Button>
                   </>
                 ) : null}
@@ -779,7 +781,8 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
 }
 
 function ServiceCard({ service, onClick, isChild = false, isLastChild = false }: { service: UserService; onClick: () => void; isChild?: boolean; isLastChild?: boolean }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { money, date } = useDisplay();
   const statusColor = statusColors[service.status] || 'gray';
   const statusLabel = t(`status.${service.status}`, service.status);
 
@@ -829,13 +832,13 @@ function ServiceCard({ service, onClick, isChild = false, isLastChild = false }:
               </Text>
               {service.expire && (
                 <Text size="xs" c="dimmed">
-                  {new Date(service.expire as string).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')}
+                  {date(service.expire)}
                 </Text>
               )}
             </div>
             <Group gap="sm">
               {service.service.cost > 0 && (
-                <Text size="sm" c="dimmed">{service.service.cost} {t('common.currency')}</Text>
+                <Text size="sm" c="dimmed">{money(service.service.cost)}</Text>
               )}
               <Badge color={statusColor} variant="light" size="sm">
                 {statusLabel}
@@ -863,13 +866,13 @@ function ServiceCard({ service, onClick, isChild = false, isLastChild = false }:
           </Text>
           {service.expire && (
             <Text size="xs" c="dimmed">
-              {new Date(service.expire as string).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')}
+              {date(service.expire)}
             </Text>
           )}
         </div>
         <Group gap="sm">
           {service.service.cost > 0 && (
-            <Text size="sm" c="dimmed">{service.service.cost} {t('common.currency')}</Text>
+            <Text size="sm" c="dimmed">{money(service.service.cost)}</Text>
           )}
           <Badge color={statusColor} variant="light">
             {statusLabel}

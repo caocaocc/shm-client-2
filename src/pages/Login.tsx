@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { SystemSettings } from '../hooks/useDisplay';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Box, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, Checkbox, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useForm, isEmail, hasLength } from '@mantine/form';
 import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, IconBrandTelegram, IconBrandGoogle, IconBrandYandex, IconBrandGithub, IconMailForward, IconLock } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
-import { auth, passkeyApi, userApi, oauth2Api, systemApi, SystemAuthConfig } from '../api/client';
+import { auth, passkeyApi, userApi, oauth2Api } from '../api/client';
 import { setCookie, getResetTokenCookie, removeResetTokenCookie, getResetLoginCookie, removeResetLoginCookie, parseAndSaveResetToken } from '../api/cookie';
 import { useStore } from '../store/useStore';
 import { config } from '../config';
@@ -78,7 +79,7 @@ export default function Login() {
   const [verifyingToken, setVerifyingToken] = useState(false);
   const [docModalUrl, setDocModalUrl] = useState('');
   const [docModalTitle, setDocModalTitle] = useState('');
-  const [systemAuth, setSystemAuth] = useState<SystemAuthConfig | null>(null);
+  const systemAuth = useContext(SystemSettings);
   const { setUser, setTelegramPhoto } = useStore();
   const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -121,27 +122,18 @@ export default function Login() {
   ].filter((link) => Boolean(link.href));
   const hasLegalLinks = legalLinks.length > 0;
 
-  useEffect(() => {
-    systemApi.getAuthConfig()
-      .then((res) => {
-        const raw = res.data?.data;
-        const cfg = Array.isArray(raw) ? raw[0] : raw;
-        if (cfg) setSystemAuth(cfg);
-      })
-      .catch(() => { /* backend without /system/auth — keep static config */ });
-  }, []);
 
-  const captchaEnabled = systemAuth ? !!systemAuth.captcha.enabled : config.CAPTCHA_ENABLED === 'true';
-  const registerEnabled = systemAuth ? !!systemAuth.register.enabled : true;
+  const captchaEnabled = systemAuth?.captcha ? !!systemAuth.captcha.enabled : config.CAPTCHA_ENABLED === 'true';
+  const registerEnabled = systemAuth?.register ? !!systemAuth.register.enabled : true;
   // Бэкенд пока не отдаёт auth.enabled/passkey надёжно (и passkey может
   // вообще отсутствовать в ответе) — вход по паролю всегда включён,
   // passkey берёт статичный env-фолбэк, если бэкенд поле не прислал.
   const passwordLoginEnabled = true;
   const passkeyAuthEnabled = systemAuth?.passkey?.enabled ?? staticPasskeyAuth;
-  const hasGoogleAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.google?.enabled;
-  const hasYandexAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.yandex?.enabled;
-  const hasGithubAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.github?.enabled;
-  const hasTelegramOidcAuth = !isTelegramWebApp && !!systemAuth?.telegram.enabled;
+  const hasGoogleAuth = !isTelegramWebApp && !!systemAuth?.oauth2?.providers?.google?.enabled;
+  const hasYandexAuth = !isTelegramWebApp && !!systemAuth?.oauth2?.providers?.yandex?.enabled;
+  const hasGithubAuth = !isTelegramWebApp && !!systemAuth?.oauth2?.providers?.github?.enabled;
+  const hasTelegramOidcAuth = !isTelegramWebApp && !!systemAuth?.telegram?.enabled;
   const oauth2ProvidersCount = [hasGoogleAuth, hasYandexAuth, hasGithubAuth].filter(Boolean).length;
   const hasPasskeyAuth = isWebAuthnSupported && passkeyAuthEnabled;
 

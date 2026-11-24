@@ -1,3 +1,4 @@
+import { useDisplay } from '../hooks/useDisplay';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActionIcon,
@@ -132,12 +133,6 @@ function toBase64(file: File): Promise<string> {
   });
 }
 
-function formatDate(value?: string): string {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString();
-}
 
 function normalizeStatus(status?: string): string {
   return status && KNOWN_STATUSES.has(status) ? status : 'unknown';
@@ -155,6 +150,7 @@ function statusColor(status?: string): string {
 
 export default function Tickets() {
   const { t } = useTranslation();
+  const { money, timestamp: formatDate } = useDisplay();
   const { colorScheme } = useMantineColorScheme();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const setHasNewTicketMessages = useStore((s) => s.setHasNewTicketMessages);
@@ -909,14 +905,14 @@ export default function Tickets() {
                   if (value && !newSubject.trim()) {
                     const pay = payments.find((p) => String(p.id) === value);
                     if (pay) {
-                      setNewSubject(`${t('tickets.ticketType.payment')} #${pay.id} — ${pay.money}₽${pay.date ? ` · ${formatDate(pay.date)}` : ''}`);
+                      setNewSubject(`${t('tickets.ticketType.payment')} #${pay.id} — ${money(pay.money)}${pay.date ? ` · ${formatDate(pay.date)}` : ''}`);
                     }
                   }
                 }}
                 clearable
                 data={payments.map((pay) => ({
                   value: String(pay.id),
-                  label: `#${pay.id} — ${pay.money}₽${pay.date ? ` · ${formatDate(pay.date)}` : ''}`,
+                  label: `#${pay.id} — ${money(pay.money)}${pay.date ? ` · ${formatDate(pay.date)}` : ''}`,
                 }))}
               />
             )

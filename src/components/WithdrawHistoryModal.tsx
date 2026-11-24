@@ -1,3 +1,5 @@
+import { parsePeriod } from '../utils/format';
+import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect } from 'react';
 import { Modal, Stack, Text, Center, Loader, Paper, Pagination, LoadingOverlay, ScrollArea } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
@@ -28,10 +30,9 @@ const PER_PAGE = 10;
 
 function formatPeriod(value: number, t: ReturnType<typeof useTranslation>['t']) {
   if (!value) return '---';
-  const [m, rest = ''] = value.toString().split('.');
-  const months = Number(m);
-  const days = Number(rest.slice(0, 2) || 0);
-  const hours = Number(rest.slice(2, 4) || 0);
+  const period = parsePeriod(value);
+  if (!period) return '—';
+  const { months, days, hours } = period;
   const parts: string[] = [];
   if (months) parts.push(`${months} ${t('common.months')}`);
   if (days) parts.push(`${days} ${t('common.days')}`);
@@ -47,7 +48,8 @@ export default function WithdrawHistoryModal({ opened, onClose }: WithdrawHistor
   const [totalItems, setTotalItems] = useState(0);
   const [sortField, setSortField] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { money, date } = useDisplay();
 
   const fetchWithdrawals = async (
     p: number,
@@ -95,19 +97,19 @@ export default function WithdrawHistoryModal({ opened, onClose }: WithdrawHistor
   const columns: Column<Withdraw>[] = [
     {
       title: t('withdrawals.withdrawDate'),
-      accessor: (w) => w.withdraw_date ? new Date(w.withdraw_date).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US') : '-',
+      accessor: (w) => date(w.withdraw_date),
       sortable: true,
       sortKey: 'withdraw_date',
     },
     {
       title: t('withdrawals.endDate'),
-      accessor: (w) => w.end_date ? new Date(w.end_date).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US') : '-',
+      accessor: (w) => date(w.end_date),
       sortable: true,
       sortKey: 'end_date',
     },
     {
       title: t('services.cost'),
-      accessor: (w) => <Text size="sm">{w.cost} ₽</Text>,
+      accessor: (w) => <Text size="sm">{money(w.cost)}</Text>,
       sortable: true,
       sortKey: 'cost',
     },
@@ -115,7 +117,7 @@ export default function WithdrawHistoryModal({ opened, onClose }: WithdrawHistor
       title: t('withdrawals.total'),
       accessor: (w) => (
         <Text size="sm" fw={500} c="red" style={{ whiteSpace: 'nowrap' }}>
-          {w.total && w.total > 0 ? '-' : ''}{w.total} ₽
+          {money(-Math.abs(w.total))}
         </Text>
       ),
       sortable: true,

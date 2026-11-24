@@ -1,3 +1,4 @@
+import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect, useCallback } from 'react';
 import { Card, Text, Stack, Group, Divider, Grid, Button, TextInput, Tooltip, ActionIcon, Avatar, Title, Modal, Loader, Center, Collapse, Alert, Skeleton, useMantineColorScheme } from '@mantine/core';
 import { IconUser, IconPhone, IconCopy, IconCheck, IconBrandTelegram, IconCreditCard, IconChevronDown, IconChevronUp, IconMail, IconAlertCircle } from '@tabler/icons-react';
@@ -100,6 +101,7 @@ export default function Profile() {
   const clipboardId = useClipboard({ timeout: 1000 });
   const clipboardLink = useClipboard({ timeout: 1000 });
   const { t } = useTranslation();
+  const { money } = useDisplay();
   const basePath = config.SHM_BASE_PATH && config.SHM_BASE_PATH !== '/' ? config.SHM_BASE_PATH : '';
   const partnerLink = `${window.location.origin}${basePath}?partner_id=${encodePartnerIdBase64url(profile?.user_id || 0)}`;
 
@@ -565,7 +567,7 @@ export default function Profile() {
             <Group justify="space-between" align="center">
               <div>
                 <Group gap="xs" align="baseline">
-                  {t('profile.balance')}: <Text c="cyan" size="xl" fw={700}>{profile.balance || '0.00'} {t('common.currency')}</Text>
+                  {t('profile.balance')}: <Text c="cyan" size="xl" fw={700}>{money(profile.balance)}</Text>
                 </Group>
               </div>
               <Button leftSection={<IconCreditCard size={18} />} color="cyan" onClick={() => emailBlocked ? setOpenEmailModal(true) : (setPayModalAmount(forecast?.total ?? undefined), setPayModalOpen(true))}>
@@ -577,7 +579,7 @@ export default function Profile() {
 
             <Group justify="space-between" align="center">
               <div>
-                  <Text size="xm" c="dimmed">{t('profile.bonus')}: {profile.bonus}</Text>
+                  <Text size="xm" c="dimmed">{t('profile.bonus')}: {money(profile.bonus)}</Text>
               </div>
               <Button onClick={() => emailBlocked ? setOpenEmailModal(true) : setPromoModalOpen(true)} color="cyan">
                 {t('profile.enterPromo')}
@@ -691,7 +693,7 @@ export default function Profile() {
             <div>
               <Text fw={500}>{t('profile.forecast')}</Text>
               <Text size="sm" c={forecast.total > 0 ? 'red' : 'green'} fw={600}>
-                {t('profile.toPay')}: {forecast.total} {t('common.currency')}
+                {t('profile.toPay')}: {money(forecast.total)}
               </Text>
             </div>
             {forecastOpen ? <IconChevronUp size={20} /> : <IconChevronDown size={20} />}
@@ -721,7 +723,7 @@ export default function Profile() {
                       </div>
                       <div style={{ textAlign: 'right' }}>
                         <Text size="sm" c="dimmed">
-                          {item.total} {t('common.currency')}
+                          {money(item.total)}
                         </Text>
                         <Text size="xs" c={item.status === 'NOT PAID' ? 'red' : 'green'}>
                           {t(`status.${item.status}`)}
@@ -741,7 +743,7 @@ export default function Profile() {
                         </div>
                         <div style={{ textAlign: 'right' }}>
                           <Text size="sm" fw={700} c="red">
-                            {item.next.total} {t('common.currency')}
+                            {money(item.next.total)}
                           </Text>
                         </div>
                       </Group>
@@ -753,12 +755,12 @@ export default function Profile() {
                 <Card withBorder radius="sm" p="sm" bg={colorScheme === 'dark' ? 'rgba(239, 68, 68, 0.15)' : 'red.0'}>
                   <Group justify="space-between" wrap="nowrap">
                     <Text size="sm" fw={500} c="red">{t('profile.debt')}</Text>
-                    <Text size="sm" fw={700} c="red">{forecast.dept} {t('common.currency')}</Text>
+                    <Text size="sm" fw={700} c="red">{money(forecast.dept)}</Text>
                   </Group>
                 </Card>
               )}
               <Button leftSection={<IconCreditCard size={18} />} onClick={() => emailBlocked ? setOpenEmailModal(true) : (setPayModalAmount(forecast?.total ?? undefined), setPayModalOpen(true))}>
-                {t('profile.toPay')} {forecast.total} {t('common.currency')}
+                {t('profile.toPay')} {money(forecast.total)}
               </Button>
             </Stack>
           </Collapse>

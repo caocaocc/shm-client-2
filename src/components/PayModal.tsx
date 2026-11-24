@@ -1,3 +1,4 @@
+import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, Stack, Group, Button, Text, NumberInput, Select, Loader, ActionIcon, Badge, Card } from '@mantine/core';
@@ -24,6 +25,7 @@ interface PayModalProps {
 
 export default function PayModal({ opened, onClose, initialAmount }: PayModalProps) {
   const { t } = useTranslation();
+  const { amountProps } = useDisplay();
   const [paySystems, setPaySystems] = useState<PaySystem[]>([]);
   const [selectedPaySystem, setSelectedPaySystem] = useState<string | null>(null);
   const [payAmount, setPayAmount] = useState<number | string>(initialAmount ?? 100);
@@ -209,7 +211,7 @@ export default function PayModal({ opened, onClose, initialAmount }: PayModalPro
               min={1}
               step={10}
               decimalScale={2}
-              suffix=" ₽"
+              {...amountProps}
             />
             <Group justify="flex-end">
               <Button variant="light" onClick={onClose} disabled={processing}>

@@ -1,3 +1,4 @@
+import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect } from 'react';
 import { Modal, Stack, Text, Center, Loader, Paper, Pagination, LoadingOverlay, ScrollArea } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +27,8 @@ export default function PayHistoryModal({ opened, onClose }: PayHistoryModalProp
   const [totalItems, setTotalItems] = useState(0);
   const [sortField, setSortField] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { money, date } = useDisplay();
 
   const fetchPayments = async (
     p: number,
@@ -75,9 +77,7 @@ export default function PayHistoryModal({ opened, onClose }: PayHistoryModalProp
     {
       title: t('payments.date'),
       accessor: (p) =>
-        p.date
-          ? new Date(p.date).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')
-          : '-',
+        date(p.date),
       sortable: true,
       sortKey: 'date',
     },
@@ -87,7 +87,7 @@ export default function PayHistoryModal({ opened, onClose }: PayHistoryModalProp
       accessor: (p) => (
         <Text size="sm" fw={500} c={p.money > 0 ? 'green' : 'red'}>
           {p.money > 0 ? '+' : ''}
-          {p.money} {t('common.currency')}
+          {money(p.money)}
         </Text>
       ),
       align: 'right',
