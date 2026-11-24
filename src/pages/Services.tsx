@@ -1,4 +1,5 @@
 import { useServiceConnection } from '../hooks/useServiceConnection';
+import { ServiceRouting } from '../components/ServiceRouting';
 import { SubscriptionUsage } from '../components/SubscriptionUsage';
 import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect, useRef } from 'react';
@@ -52,6 +53,7 @@ interface UserService {
   parent: number | null;
   description?: string | null;
   settings?: Record<string, unknown>;
+  routing_available?: boolean;
   children?: UserService[];
 }
 
@@ -101,7 +103,8 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
   const subscriptionUrl = connection.subscription?.url;
   const [nextServiceInfo, setNextServiceInfo] = useState<{ name: string; cost: number } | null>(null);
   const [nextServiceLoading, setNextServiceLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<string | null>('info');
+  const [visitedRouting, setVisitedRouting] = useState(false);
+  const [activeTab, setActiveTab] = useState<string | null>(service.status === 'ACTIVE' && ['proxy', 'vpn'].includes(category) ? 'config' : 'info');
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [stopping, setStopping] = useState(false);
@@ -396,10 +399,14 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
         </div>
       </Group>
 
-      <Tabs value={activeTab} onChange={setActiveTab}>
+      <Tabs value={activeTab} onChange={tab => {
+        setActiveTab(tab);
+        if (tab === 'routing') setVisitedRouting(true);
+      }}>
         <Tabs.List>
           <Tabs.Tab value="info">{t('services.info')}</Tabs.Tab>
           {isVpnOrProxy && service.status === 'ACTIVE' && <Tabs.Tab value="config">{t('services.connection')}</Tabs.Tab>}
+          {service.routing_available === true && <Tabs.Tab value="routing">{t('services.routing')}</Tabs.Tab>}
         </Tabs.List>
 
         <Tabs.Panel value="info" pt="md">
@@ -625,6 +632,9 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
             </Stack>
           </Tabs.Panel>
         )}
+        {service.routing_available === true && visitedRouting && <Tabs.Panel value="routing" pt="md">
+          <ServiceRouting id={service.user_service_id} active={activeTab === 'routing'} />
+        </Tabs.Panel>}
       </Tabs>
 
       {isNotPaid && (
