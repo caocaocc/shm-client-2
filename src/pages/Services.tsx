@@ -1,3 +1,5 @@
+import { useServiceConnection } from '../hooks/useServiceConnection';
+import { SubscriptionUsage } from '../components/SubscriptionUsage';
 import { useDisplay } from '../hooks/useDisplay';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -93,11 +95,12 @@ interface ServiceDetailProps {
 }
 
 function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated }: ServiceDetailProps) {
-  const [storageData, setStorageData] = useState<string | null>(null);
-  const [subscriptionUrl, setSubscriptionUrl] = useState<string | null>(null);
+  const category = normalizeCategory(service.service.category);
+  const connection = useServiceConnection(service.user_service_id, category, service.status);
+  const storageData = connection.vpnConfig;
+  const subscriptionUrl = connection.subscription?.url;
   const [nextServiceInfo, setNextServiceInfo] = useState<{ name: string; cost: number } | null>(null);
   const [nextServiceLoading, setNextServiceLoading] = useState(false);
-  const [, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string | null>('info');
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -339,47 +342,6 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
     }
   };
 
-  const category = normalizeCategory(service.service.category);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (category === 'proxy') {
-        const prefix = config.PROXY_STORAGE_PREFIX ? config.PROXY_STORAGE_PREFIX : 'vpn_mrzb_';
-        try {
-          const mzResponse = await api.get(`/storage/manage/${prefix}${service.user_service_id}?format=json`);
-          const url = mzResponse.data.subscription_url || mzResponse.data.response?.subscriptionUrl;
-          if (url) {
-            setSubscriptionUrl(url);
-          }
-          setActiveTab('config');
-        } catch {
-        }
-        if (!subscriptionUrl ) {
-          try {
-            const remnaResponse = await api.get(`/storage/manage/vpn_remna_${service.user_service_id}?format=json`);
-            const url = remnaResponse.data.subscription_url || remnaResponse.data.response?.subscriptionUrl;
-            if (url) {
-              setSubscriptionUrl(url);
-            }
-          } catch {
-          }
-        }
-      } else if (category === 'vpn') {
-        const prefix = config.VPN_STORAGE_PREFIX ? config.VPN_STORAGE_PREFIX : 'vpn';
-        try {
-          const vpnResponse = await api.get(`/storage/manage/${prefix}${service.user_service_id}`);
-          const configData = vpnResponse.data;
-          if (configData) {
-            setStorageData(configData);
-          }
-          setActiveTab('config');
-        } catch {
-        }
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, [service.user_service_id, category]);
 
   useEffect(() => {
     const fetchNextService = async () => {
@@ -506,6 +468,7 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
                 )}
               </Group>
             )}
+            {connection.subscription && <SubscriptionUsage data={connection.subscription} />}
             {service.children && service.children.length > 0 && (
               <>
                 <Text size="sm" c="dimmed" mt="md">{t('services.includedServices')}:</Text>
@@ -527,6 +490,11 @@ function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated
         { service.status === 'ACTIVE' && (
           <Tabs.Panel value="config" pt="md">
             <Stack gap="md">
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed" role="status">{connection.loading ? t('common.loading') : connection.failed
+                  ? t('subscription.loadError') : !subscriptionUrl && !storageData ? t('subscription.notReady') : ''}</Text>
+                <Button variant="subtle" size="xs" onClick={connection.reload} loading={connection.loading}>{t('common.refresh')}</Button>
+              </Group>
               {isProxy && subscriptionUrl && (
                 <Paper withBorder p="md" radius="md">
                   { config.SHOW_PROXY_SUB_LINK === 'true' && (
@@ -1128,8 +1096,8 @@ export default function Services() {
       )}
 
       <Modal opened={opened} onClose={close} title={t('services.serviceDetails')} size="lg">
-        {selectedService && (
-          <ServiceDetail
+        {opened && selectedService && (
+          <ServiceDetail key={selectedService.user_service_id}
             service={selectedService}
             onDelete={() => {
               close();
