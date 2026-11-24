@@ -1,16 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Paper, Group, Box, Text, Button, CloseButton } from '@mantine/core';
 import { IconShare2 } from '@tabler/icons-react';
 import { useTranslation, Trans } from 'react-i18next';
 import { usePWAInstall } from '../hooks/usePWAInstall';
 import { getCookie } from '../api/cookie';
 
+const shownKey = 'shm_pwa_install_banner_shown';
+let shownThisVisit = false;
+
 export function PWAInstallBanner() {
   const { canInstall, isIOSInstall, isTelegramWebApp, install } = usePWAInstall();
   const { t } = useTranslation();
-  const [dismissed, setDismissed] = useState(false);
+  const eligible = canInstall || isIOSInstall || isTelegramWebApp;
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!eligible || shownThisVisit) return;
+    try {
+      if (localStorage.getItem(shownKey)) return;
+      localStorage.setItem(shownKey, '1');
+    } catch { /* Keep the per-visit marker when browser storage is unavailable. */ }
+    shownThisVisit = true;
+    setVisible(true);
+  }, [eligible]);
 
-  if (dismissed || (!canInstall && !isIOSInstall && !isTelegramWebApp)) return null;
+  if (!eligible || !visible) return null;
 
   const openInBrowser = () => {
     const sessionId = getCookie();
@@ -58,9 +71,9 @@ export function PWAInstallBanner() {
           {isTelegramWebApp ? (
             <Button size="xs" onClick={openInBrowser}>{t('common.installAppBtn')}</Button>
           ) : canInstall ? (
-            <Button size="xs" onClick={() => install()}>{t('common.installAppBtn')}</Button>
+            <Button size="xs" onClick={() => { setVisible(false); void install(); }}>{t('common.installAppBtn')}</Button>
           ) : null}
-          <CloseButton size="sm" onClick={() => setDismissed(true)} aria-label={t('common.installAppDismiss')} />
+          <CloseButton size="sm" onClick={() => setVisible(false)} aria-label={t('common.installAppDismiss')} />
         </Group>
       </Group>
     </Paper>
